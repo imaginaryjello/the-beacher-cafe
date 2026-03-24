@@ -9,9 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const MONGO_URL =
-  "mongodb+srv://sapkotan034:nishan123@nishanmongodb.1eczj.mongodb.net/?appName=nishanMongodb";
-
+const MONGO_URL = process.env.MONGO_URL;
 mongoose
   .connect(MONGO_URL)
   .then(() => console.log("Connected to MongoDB"))
