@@ -1,0 +1,13 @@
+@import url("https://fonts.googleapis.com");
+
+.container {
+  display: flex;
+  justify-content: center; /* Horizontal center */
+  align-items: center; /* Vertical center */
+  min-height: 100vh; /* Optional: Full viewport height */
+}
+
+img {
+  max-width: 100%; /* Responsive width */
+  height: auto;
+}
