@@ -5,6 +5,7 @@ import Navbar from "./navbar";
 import Menu from "./menu";
 import About from "./about";
 import Reservations from "./reservation";
+import Register from "./register";
 import Footer from "./footer";
 
 function Home() {
