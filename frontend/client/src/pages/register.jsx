@@ -118,7 +118,7 @@ export default function Register() {
                 className="w-full p-4 border-2 border-[#c2410c] rounded-xl focus:outline-none focus:border-[#9a3410] text-lg bg-white"
               >
                 <option value="employee">Employee (Kitchen / Server)</option>
-                <option value="owner">Owner / Admin</option>
+                <option value="admin">Owner / Admin</option>
               </select>
               <p className="text-xs text-[#6b5a47] mt-2">
                 Note: Owner role should only be used by the café owner.

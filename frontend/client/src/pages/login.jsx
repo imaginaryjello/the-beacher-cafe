@@ -3,10 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./navbar";
 import Footer from "./footer";
-// import { AuthContext } from "../context/AuthContext"; // We'll create this soon
+import { AuthContext } from "./context/AuthContext"; // We'll create this soon
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext); // Get login function from context
 
   const [formData, setFormData] = useState({
     email: "",
@@ -27,23 +28,26 @@ export default function Login() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "http://localhost:5000/api/login",
         formData,
       );
 
       if (response.data.success) {
         login(response.data); // Save user + token in context
         alert(`Welcome back, ${response.data.user.name}!`);
-
-        // Redirect based on role
-        if (response.data.user.role === "owner") {
+        navigate("/dashboard"); // Redirect to dashboard after login
+        // // Redirect based on role
+        if (
+          response.data.user.role === "admin" ||
+          response.data.user.role === "coadmin"
+        ) {
           navigate("/dashboard");
         } else {
-          navigate("/employee-portal");
+          navigate("/dashboard");
         }
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid email or password");
+      setError(err.response?.data?.message);
     } finally {
       setLoading(false);
     }
