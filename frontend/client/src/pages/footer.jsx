@@ -1,4 +1,5 @@
 import React from "react";
+import Register from "./register";
 
 export default function Footer() {
   return (
@@ -16,6 +17,7 @@ export default function Footer() {
           <div className="mt-4 text-xs border border-[#c2410c] inline-block px-3 py-1 rounded-full text-[#c2410c] tracking-widest">
             EST. 1986
           </div>
+          <p>{/* <Register /> */}</p>
         </div>
 
         {/* 📍 Contact + Hours */}
@@ -23,9 +25,12 @@ export default function Footer() {
           <h2 className="text-xl font-semibold mb-4 text-[#c2410c]">
             Contact Us
           </h2>
+          <h1 className="text-2xl font-bold mb-2 text-[#f5e8c7]">
+            The Beacher Café
+          </h1>
+          // THe employee portal
           <p className="text-sm mb-2">2164 Queen St E, Toronto, ON</p>
           <p className="text-sm mb-4">+1 (647) 123-4567</p>
-
           <h3 className="text-lg font-semibold mb-2 text-[#c2410c]">Hours</h3>
           <p className="text-sm">Mon – Tue: 8am – 4pm</p>
           <p className="text-sm">Wed – Sat: 8am – 8pm</p>
@@ -35,6 +40,16 @@ export default function Footer() {
         {/* 🌐 Social Media */}
         <div>
           <h2 className="text-xl font-semibold mb-4 text-[#c2410c]">
+            <p>
+              Register
+              <a
+                href="/register"
+                className="text-[#c2410c] hover:underline ml-1"
+              >
+                here
+              </a>
+              to receive updates and special offers!
+            </p>
             Stay Connected
           </h2>
 
