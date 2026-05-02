@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm run dev",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "seed": "node --experimental-vm-modules ./script.js"
   },
   "author": "Nishan",
   "license": "ISC",
@@ -17,7 +18,8 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.3.1"
+    "mongoose": "^9.3.1",
+    "node-cron": "^4.2.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

@@ -8,17 +8,15 @@ const employeeSchema = {
   password: { type: String, required: true },
   role: {
     type: String,
-    enum: ["admin", "co-admin", "employee"],
+    enum: ["admin", "coadmin", "employee"],
     default: "employee",
-    // authority: {
-    //   admin: 3,
-    //   coAdmin: 2,
-    //   employee: 1,
-    // },
-    //a feature that checks whether the user has security access or not for instance for first time login has to be given acceptance by admin or co-admin,
-    // isActive: { type: Boolean, default: false },
-    //a feature that has to check the role that will let user go for certain routes or not for instance only admin can access the employee management routes and co-admin can access the order management routes and employee can access the inventory management routes
   },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
+  approvalExpiresAt: { type: Date, default: null },
 };
 
 const employee = mongoose.model("Employee", employeeSchema);

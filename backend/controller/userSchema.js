@@ -12,6 +12,7 @@ const employeeSchema = {
     enum: ["admin", "co-admin", "employee"],
     default: "employee",
   },
+  status: { type: String, enum: ["active", "inactive"], default: "inactive" },
   createdAt: { type: Date, default: Date.now },
 };
 

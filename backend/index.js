@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 
 import router from "./routes/user.js";
+import { startCronJobs } from "./utils/cronjobs.js";
 
 dotenv.config();
 
@@ -22,4 +23,6 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+startCronJobs(); // call this after mongoose connects
 app.use("/api", router);
+// app.use("/api/menu", require("./routes/menu"));

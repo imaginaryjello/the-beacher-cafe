@@ -1,36 +1,47 @@
+// src/pages/context/AuthContext.jsx
 import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true); // starts true — we're checking localStorage
 
-  // load user from localstorage when app starts
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
-    if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
-      setToken(token);
-      setLoading(false);
+
+    if (savedToken && savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+        setToken(savedToken);
+      } catch (e) {
+        // WHY: If JSON.parse fails (corrupted data), clear storage and start fresh
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
     }
+
+    // FIX: setLoading(false) must run WHETHER OR NOT there's a saved user.
+    // Previously it only ran inside the if block — so if no user was saved,
+    // loading stayed true forever and the app hung on the loading screen.
+    setLoading(false);
   }, []);
 
-  // login function to save user and tokento localstorage and state
   const login = (userData) => {
     localStorage.setItem("token", userData.token);
     localStorage.setItem("user", JSON.stringify(userData.user));
+    setToken(userData.token);
     setUser(userData.user);
     console.log("User logged in:", userData.user);
   };
 
-  // logout function to clear localstorage and state
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
+    setToken(null);
   };
 
   return (
