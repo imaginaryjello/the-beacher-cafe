@@ -15,7 +15,7 @@ import Login from "./pages/login";
 // Dashboard + Pages
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Members from "./pages/Dashboard/Members";
-// import MenuEditor from "./pages/Dashboard/MenuEditor";     // next step
+import MenuEditor from "./pages/Dashboard/Menueditor"; // next step
 // import SpecialsEditor from "./pages/Dashboard/SpecialsEditor";
 // import GalleryManager from "./pages/Dashboard/GalleryManager";
 // import ReservationsList from "./pages/Dashboard/ReservationsList";
@@ -61,7 +61,7 @@ function App() {
           >
             <Route index element={<ComingSoon page="Dashboard Home" />} />
             <Route path="members" element={<Members />} />
-            <Route path="menu" element={<ComingSoon page="Menu Editor" />} />
+            <Route path="menu" element={<MenuEditor />} />
             <Route
               path="specials"
               element={<ComingSoon page="Specials Editor" />}

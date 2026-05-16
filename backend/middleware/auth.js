@@ -59,6 +59,23 @@ export const requireAdmin = (req, res, next) => {
 };
 
 // ============================================
+// MIDDLEWARE : coadmin or admin
+// Blocks anyone who isn't role: "admin" or "coadmin" (managers).
+//
+// HOW TO USE:
+//   router.get("/manager-data", verifyToken, requireManagerOrAdmin, handler);
+
+export const requireCoAdminOrAdmin = (req, res, next) => {
+  if (req.user.role !== "admin" && req.user.role !== "coadmin") {
+    return res.status(403).json({
+      success: false,
+      message: "Access denied. Manager or owner privileges required.",
+    });
+  }
+  next();
+};
+
+// ============================================
 // MIDDLEWARE 3: requireAccepted
 // Blocks employees who are still pending or inactive
 // from accessing dashboard-level routes.

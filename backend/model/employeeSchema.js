@@ -17,6 +17,7 @@ const employeeSchema = {
     default: "pending",
   },
   approvalExpiresAt: { type: Date, default: null },
+  createdAt: { type: Date, default: Date.now },
 };
 
 const employee = mongoose.model("Employee", employeeSchema);
