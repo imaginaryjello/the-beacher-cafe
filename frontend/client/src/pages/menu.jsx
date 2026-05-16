@@ -1,31 +1,124 @@
-import React from "react";
+// src/pages/menu.jsx
+// WHY: was fully static HTML — now pulls live from backend
+// Static fallback content kept for sections not yet in the DB
+import { useState, useEffect } from "react";
 import Navbar from "./navbar";
 import Footer from "./footer";
+
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+// ─────────────────────────────────────────
+// LOADING SKELETON
+// ─────────────────────────────────────────
+const SkeletonRow = () => (
+  <div className="flex justify-between border-b pb-4 animate-pulse">
+    <div className="h-4 bg-[#e8d9b8] rounded w-2/3" />
+    <div className="h-4 bg-[#e8d9b8] rounded w-12" />
+  </div>
+);
+
+// ─────────────────────────────────────────
+// MENU ITEM ROW — simple list style
+// ─────────────────────────────────────────
+const MenuRow = ({ item }) => (
+  <div className="flex justify-between border-b border-[#e8d9b8] pb-4 gap-4">
+    <div>
+      <span className="font-medium text-[#3f2a1d]">{item.name}</span>
+      {item.description && (
+        <p className="text-xs text-gray-500 mt-0.5">{item.description}</p>
+      )}
+    </div>
+    <span className="font-bold text-[#3f2a1d] flex-shrink-0">
+      ${Number(item.price).toFixed(2)}
+    </span>
+  </div>
+);
+
+// ─────────────────────────────────────────
+// MENU SECTION — one category block
+// ─────────────────────────────────────────
+const MenuSection = ({ title, items, loading, fallbackContent }) => {
+  if (!loading && items.length === 0 && !fallbackContent) return null;
+
+  return (
+    <div className="bg-white border border-[#e8d9b8] rounded-3xl p-8 shadow">
+      <h3 className="text-2xl font-bold mb-6 text-[#c2410c]">{title}</h3>
+      {loading ? (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
+      ) : items.length > 0 ? (
+        <div className="space-y-4">
+          {items.map((item) => (
+            <MenuRow key={item._id} item={item} />
+          ))}
+        </div>
+      ) : (
+        // WHY: fallback shows static content while DB is empty
+        // Remove this once all items are in the DB
+        fallbackContent
+      )}
+    </div>
+  );
+};
+
 const Menu = () => {
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        // WHY ?available=true: public menu only shows available items
+        const res = await fetch(`${API}/api/menu?available=true`);
+        const data = await res.json();
+        if (data.success) setMenuItems(data.menuItems);
+        else setError("Menu unavailable right now.");
+      } catch {
+        setError("Could not load menu. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMenu();
+  }, []);
+
+  // Group items by category
+  const byCategory = (cat) => menuItems.filter((i) => i.category === cat);
+  const specials = menuItems.filter(
+    (i) => i.isSpecial || i.category === "specials",
+  );
+
   return (
     <>
-      {/* NEW VINTAGE NAVBAR */}
       <Navbar />
       <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d] pt-24">
-        {" "}
-        {/* Vintage Paper Header – exactly like 1980s diner menus */}
+        {/* ── HERO HEADER ── */}
         <div className="bg-[#3f2a1d] text-[#f5e8c7] py-14 text-center relative">
-          <div className="absolute inset-0 bg-[radial-gradient(#f5e8c7_0.8px,transparent_0.8px)] bg-size-[12px_12px] opacity-10"></div>
-
+          <div className="absolute inset-0 bg-[radial-gradient(#f5e8c7_0.8px,transparent_0.8px)] bg-size-[12px_12px] opacity-10" />
           <h1 className="text-6xl md:text-7xl font-black tracking-[4px] leading-none">
             THE BEACHER CAFÉ
           </h1>
           <p className="mt-3 text-2xl tracking-widest opacity-90">
-            EST. 1986 • TORONTO’S NEIGHBOURHOOD CAFÉ
+            EST. 1986 • TORONTO'S NEIGHBOURHOOD CAFÉ
           </p>
-
-          {/* Subtle “famous since” badge like your real menu */}
           <div className="absolute bottom-6 right-8 bg-[#c2410c] text-[#f5e8c7] text-xs font-bold px-6 py-1 rounded-full rotate-[-8deg] shadow-md">
-            FAMOUS HOLLANDIAISE SINCE 1986
+            FAMOUS HOLLANDAISE SINCE 1986
           </div>
         </div>
+
         <div className="max-w-5xl mx-auto px-6 py-12">
-          {/* CHALKBOARD SPECIALS – handwritten feel */}
+          {/* ── ERROR STATE ── */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mb-8 text-center">
+              {error}
+            </div>
+          )}
+
+          {/* ── CHALKBOARD SPECIALS ── */}
           <section className="mb-16">
             <div className="bg-[#1c1c1c] text-[#f5e8c7] p-10 rounded-3xl shadow-2xl relative overflow-hidden">
               <div className="absolute top-4 left-4 text-[#c2410c] text-5xl opacity-20 font-black">
@@ -35,8 +128,35 @@ const Menu = () => {
                 BEACHER SPECIALS
               </h2>
 
-              <div className="grid md:grid-cols-2 gap-8 text-lg leading-relaxed">
-                <div className="space-y-8">
+              {loading ? (
+                <div className="grid md:grid-cols-2 gap-8">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="animate-pulse space-y-2">
+                      <div className="h-4 bg-gray-700 rounded w-3/4" />
+                      <div className="h-3 bg-gray-700 rounded w-1/2 opacity-60" />
+                    </div>
+                  ))}
+                </div>
+              ) : specials.length > 0 ? (
+                <div className="grid md:grid-cols-2 gap-8 text-lg leading-relaxed">
+                  {specials.map((item) => (
+                    <div key={item._id}>
+                      {item.name} —{" "}
+                      <span className="font-bold">
+                        ${Number(item.price).toFixed(2)}
+                      </span>
+                      {item.description && <br />}
+                      {item.description && (
+                        <span className="text-sm opacity-75">
+                          {item.description}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                // Static fallback
+                <div className="grid md:grid-cols-2 gap-8 text-lg leading-relaxed">
                   <div>
                     Soup du Jour — <span className="font-bold">$12</span>
                     <br />
@@ -58,8 +178,6 @@ const Menu = () => {
                       Build Your Own • Vegetarian or Meat
                     </span>
                   </div>
-                </div>
-                <div className="space-y-8">
                   <div>
                     Smoked Salmon Bagel — <span className="font-bold">$18</span>
                     <br />
@@ -73,25 +191,24 @@ const Menu = () => {
                     </span>
                   </div>
                   <div>
-                    Fish ’n’ Chips — <span className="font-bold">$24</span>
+                    Fish 'n' Chips — <span className="font-bold">$24</span>
                     <br />
                     <span className="text-sm opacity-75">
                       Crispy Haddock • Coleslaw & Tartar
                     </span>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </section>
 
-          {/* ALL DAY BREAKFAST – cozy card layout */}
+          {/* ── ALL DAY BREAKFAST ── */}
           <section className="mb-20">
             <h2 className="text-4xl font-bold text-center mb-10 text-[#3f2a1d] border-b-4 border-[#c2410c] pb-3 inline-block">
               ALL DAY BREAKFAST
             </h2>
-
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Eggs Benjamyn */}
+              {/* Featured cards — keep static since they have images */}
               <div className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group">
                 <img
                   src="/benamyn.png"
@@ -111,8 +228,6 @@ const Menu = () => {
                   </span>
                 </div>
               </div>
-
-              {/* Steak & Eggs */}
               <div className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group">
                 <img
                   src="/steakegg.png"
@@ -134,123 +249,166 @@ const Menu = () => {
                 </div>
               </div>
 
-              {/* Simple list items for the rest */}
-              <div className="bg-white border border-[#e8d9b8] rounded-3xl p-8 shadow-md col-span-1 md:col-span-2 grid md:grid-cols-2 gap-6 text-lg">
-                <div className="flex justify-between border-b pb-4">
-                  <span>EGGS FLORENTINE</span>
-                  <span className="font-bold">$21</span>
-                </div>
-                <div className="flex justify-between border-b pb-4 ">
-                  <span>ALL DAY BREAKFAST</span>
-                  <span className="font-bold">$18</span>
-                </div>
-                <div className="flex justify-between border-b pb-4">
-                  <span>EGGS BENEDICT</span>
-                  <span className="font-bold">$20</span>
-                </div>
-                <div className="flex justify-between border-b pb-4">
-                  <span>BEACHER-STYLE FRENCH TOAST</span>
-                  <span className="font-bold">$19</span>
-                </div>
-                <div className="flex justify-between border-b pb-4 ">
-                  <span>PANCAKES</span>
-                  <span className="font-bold">$18</span>
-                </div>
-                <div className="flex justify-between border-b pb-4 ">
-                  <span>SMOKED SALMON SCRAMBLED EGGS</span>
-                  <span className="font-bold">$18</span>
-                </div>
-                <div className="flex justify-between border-b pb-4 ">
-                  <span>THE HEALTHY BREAKFAST</span>
-                  <span className="font-bold">$18</span>
-                </div>
+              {/* Dynamic breakfast items from DB */}
+              <div className="bg-white border border-[#e8d9b8] rounded-3xl p-8 shadow-md col-span-1 md:col-span-2">
+                {loading ? (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {[1, 2, 3, 4].map((i) => (
+                      <SkeletonRow key={i} />
+                    ))}
+                  </div>
+                ) : byCategory("breakfast").length > 0 ? (
+                  <div className="grid md:grid-cols-2 gap-6 text-lg">
+                    {byCategory("breakfast").map((item) => (
+                      <div
+                        key={item._id}
+                        className="flex justify-between border-b pb-4"
+                      >
+                        <div>
+                          <span>{item.name.toUpperCase()}</span>
+                          {item.description && (
+                            <p className="text-xs text-gray-500 mt-0.5">
+                              {item.description}
+                            </p>
+                          )}
+                        </div>
+                        <span className="font-bold ml-4 flex-shrink-0">
+                          ${Number(item.price).toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  // Static fallback
+                  <div className="grid md:grid-cols-2 gap-6 text-lg">
+                    {[
+                      ["EGGS FLORENTINE", "$21"],
+                      ["ALL DAY BREAKFAST", "$18"],
+                      ["EGGS BENEDICT", "$20"],
+                      ["BEACHER-STYLE FRENCH TOAST", "$19"],
+                      ["PANCAKES", "$18"],
+                      ["SMOKED SALMON SCRAMBLED EGGS", "$18"],
+                      ["THE HEALTHY BREAKFAST", "$18"],
+                    ].map(([name, price]) => (
+                      <div
+                        key={name}
+                        className="flex justify-between border-b pb-4"
+                      >
+                        <span>{name}</span>
+                        <span className="font-bold">{price}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </section>
 
-          {/* SALADS + BURGERS – paper-menu style */}
+          {/* ── SALADS + BURGERS ── */}
           <section className="mb-20">
             <h2 className="text-4xl font-bold text-center mb-12 text-[#3f2a1d]">
               HEALTHY BOUNTIFUL SALADS & BURGERS
             </h2>
-
             <div className="grid md:grid-cols-2 gap-12">
-              {/* Salads */}
-              <div className="bg-white p-8 rounded-3xl shadow border border-[#e8d9b8]">
-                <h3 className="text-3xl font-bold mb-8 text-[#c2410c]">
-                  SALADS
-                </h3>
-                <ul className="space-y-6 text-lg">
-                  <li className="flex justify-between">
-                    <span>Cajun Chicken Caesar</span>
-                    <span className="font-bold">$24</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Classic Caesar Salad</span>
-                    <span className="font-bold">$18</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Garden Salad</span>
-                    <span className="font-bold">$18</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Fresh Fruit & Toasted Croissant</span>
-                    <span className="font-bold">$19</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Burgers */}
-              <div className="bg-white p-8 rounded-3xl shadow border border-[#e8d9b8]">
-                <h3 className="text-3xl font-bold mb-8 text-[#c2410c]">
-                  BURGERS & SANDWICHES
-                </h3>
-                <ul className="space-y-6 text-lg">
-                  <li className="flex justify-between">
-                    <span>Beach Burger</span>
-                    <span className="font-bold">$18</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Brie Burger</span>
-                    <span className="font-bold">$20</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Banquet Burger</span>
-                    <span className="font-bold">$20</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Black & Blue Burger</span>
-                    <span className="font-bold">$20</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>B.L.T. Croissant</span>
-                    <span className="font-bold">$19</span>
-                  </li>
-                </ul>
-              </div>
+              <MenuSection
+                title="SALADS"
+                items={byCategory("lunch").filter((i) =>
+                  i.name.toLowerCase().includes("salad"),
+                )}
+                loading={loading}
+                fallbackContent={
+                  <ul className="space-y-6 text-lg">
+                    {[
+                      ["Cajun Chicken Caesar", "$24"],
+                      ["Classic Caesar Salad", "$18"],
+                      ["Garden Salad", "$18"],
+                      ["Fresh Fruit & Toasted Croissant", "$19"],
+                    ].map(([n, p]) => (
+                      <li key={n} className="flex justify-between">
+                        <span>{n}</span>
+                        <span className="font-bold">{p}</span>
+                      </li>
+                    ))}
+                  </ul>
+                }
+              />
+              <MenuSection
+                title="BURGERS & SANDWICHES"
+                items={byCategory("lunch").filter(
+                  (i) => !i.name.toLowerCase().includes("salad"),
+                )}
+                loading={loading}
+                fallbackContent={
+                  <ul className="space-y-6 text-lg">
+                    {[
+                      ["Beach Burger", "$18"],
+                      ["Brie Burger", "$20"],
+                      ["Banquet Burger", "$20"],
+                      ["Black & Blue Burger", "$20"],
+                      ["B.L.T. Croissant", "$19"],
+                    ].map(([n, p]) => (
+                      <li key={n} className="flex justify-between">
+                        <span>{n}</span>
+                        <span className="font-bold">{p}</span>
+                      </li>
+                    ))}
+                  </ul>
+                }
+              />
             </div>
           </section>
 
-          {/* BEVERAGES – warm & simple */}
-          <section className="bg-white border border-[#e8d9b8] rounded-3xl p-10 shadow">
+          {/* ── BEVERAGES ── */}
+          <section className="bg-white border border-[#e8d9b8] rounded-3xl p-10 shadow mb-12">
             <h2 className="text-4xl font-bold text-center mb-10">
               BEVERAGES & SMOOTHIES
             </h2>
-            <div className="grid md:grid-cols-2 gap-10 text-lg leading-relaxed">
-              <div>
-                Brewed Coffee $3.50 • Café Latté $5 • Cappuccino $5
-                <br />
-                Espresso $4 • Orange Pekoe Tea $3.50
+            {loading ? (
+              <div className="grid md:grid-cols-2 gap-4">
+                {[1, 2].map((i) => (
+                  <SkeletonRow key={i} />
+                ))}
               </div>
-              <div>
-                Smoothies $8 (Chocolate Swirl • Strawberry Cream • Mango • Oreo)
-                <br />
-                100% Juices • Draft Beer • Hangover Caesar $15
+            ) : byCategory("drinks").length > 0 ? (
+              <div className="grid md:grid-cols-2 gap-4 text-lg">
+                {byCategory("drinks").map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex justify-between border-b border-[#e8d9b8] pb-3"
+                  >
+                    <div>
+                      <span>{item.name}</span>
+                      {item.description && (
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                    <span className="font-bold">
+                      ${Number(item.price).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
               </div>
-            </div>
+            ) : (
+              // Static fallback
+              <div className="grid md:grid-cols-2 gap-10 text-lg leading-relaxed">
+                <div>
+                  Brewed Coffee $3.50 • Café Latté $5 • Cappuccino $5
+                  <br />
+                  Espresso $4 • Orange Pekoe Tea $3.50
+                </div>
+                <div>
+                  Smoothies $8 (Chocolate Swirl • Strawberry Cream • Mango •
+                  Oreo)
+                  <br />
+                  100% Juices • Draft Beer • Hangover Caesar $15
+                </div>
+              </div>
+            )}
           </section>
 
-          <div className="text-center mt-16">
+          <div className="text-center mt-8">
             <a
               href="/"
               className="inline-block bg-[#c2410c] hover:bg-[#9a3410] text-white px-14 py-6 rounded-full text-xl font-bold tracking-wider transition-all"
@@ -259,7 +417,7 @@ const Menu = () => {
             </a>
           </div>
         </div>
-        {/* Subtle footer texture */}
+
         <Footer />
       </div>
     </>

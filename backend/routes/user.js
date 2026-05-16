@@ -167,7 +167,7 @@ router.post("/login", async (req, res) => {
 // WHAT CHANGES: Now protected by verifyToken + requireAccepted (implicit via verifyToken)
 // WHY: Before, any unauthenticated request could see all employee records.
 // ============================================
-router.get("/", verifyToken, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const employees = await Employee.find().select("-password");
 

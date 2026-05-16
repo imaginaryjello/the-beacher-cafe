@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 
 import router from "./routes/user.js";
+import menuRouter from "./routes/menu.js";
+
 import { startCronJobs } from "./utils/cronjobs.js";
 
 dotenv.config();
@@ -25,4 +27,6 @@ app.listen(PORT, () => {
 
 startCronJobs(); // call this after mongoose connects
 app.use("/api", router);
-// app.use("/api/menu", require("./routes/menu"));
+app.use("/api/menu", menuRouter);
+// app.use("/api/employee", employeeRouter);
+// app.use("/api/notification", notificationRouter);
