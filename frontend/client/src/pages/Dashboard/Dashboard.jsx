@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import NotificationBell from "../../components/NotificationBell";
 
 const Dashboard = () => {
   const { user, token, logout } = useContext(AuthContext);
@@ -16,23 +17,23 @@ const Dashboard = () => {
 
   // Poll for unread notifications (owner only)
   // WHY polling not websocket: simpler for now, we'll upgrade later
-  useEffect(() => {
-    if (!isOwner) return;
+  // useEffect(() => {
+  //   if (!isOwner) return;
 
-    const fetchUnread = async () => {
-      try {
-        const res = await fetch(`${API}/api/notifications/unread-count`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (data.success) setUnreadCount(data.count);
-      } catch (_) {}
-    };
+  //   const fetchUnread = async () => {
+  //     try {
+  //       const res = await fetch(`${API}/api/notifications/unread-count`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       const data = await res.json();
+  //       if (data.success) setUnreadCount(data.count);
+  //     } catch (_) {}
+  //   };
 
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 30000); // every 30 seconds
-    return () => clearInterval(interval);
-  }, [isOwner, token]);
+  //   fetchUnread();
+  //   const interval = setInterval(fetchUnread, 30000); // every 30 seconds
+  //   return () => clearInterval(interval);
+  // }, [isOwner, token]);
 
   const navLinks = [
     { to: "/dashboard", label: "Dashboard Home", icon: "🏠" },
@@ -148,20 +149,7 @@ const Dashboard = () => {
 
           <div className="flex items-center gap-4">
             {/* Notification bell — owner only */}
-            {isOwner && (
-              <Link
-                to="/dashboard/members"
-                className="relative p-2 rounded-full hover:bg-[#f5e8c7] transition-colors"
-                title="Pending approvals"
-              >
-                <span className="text-xl">🔔</span>
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#c2410c] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {unreadCount}
-                  </span>
-                )}
-              </Link>
-            )}
+            {<NotificationBell />}
 
             <span
               className="text-[#6b5a47] text-sm hidden sm:block"

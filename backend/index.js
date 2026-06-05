@@ -5,6 +5,9 @@ import mongoose from "mongoose";
 
 import router from "./routes/user.js";
 import menuRouter from "./routes/menu.js";
+import upload from "./routes/upload.js";
+
+import notificationRouter from "./routes/notifications.js";
 
 import { startCronJobs } from "./utils/cronjobs.js";
 
@@ -28,5 +31,8 @@ app.listen(PORT, () => {
 startCronJobs(); // call this after mongoose connects
 app.use("/api", router);
 app.use("/api/menu", menuRouter);
+app.use("/api/upload", upload);
+app.use("/api/notifications", notificationRouter);
+
 // app.use("/api/employee", employeeRouter);
 // app.use("/api/notification", notificationRouter);

@@ -321,6 +321,15 @@ router.patch("/promote/:id", verifyToken, requireAdmin, async (req, res) => {
         .json({ success: false, message: "Employee not found" });
     }
 
+    //notification for role change
+    Notification.create({
+      type: "system",
+      message: `${updated.name} role has been changed to ${role} by the owner.`,
+      relatedId: updated._id,
+    }).catch(() =>
+      console.error("Failed to create role change notification:", err),
+    );
+
     res.status(200).json({
       success: true,
       message: `${updated.name} is now a ${role}.`,
