@@ -10,7 +10,7 @@ const notificationSchema = new mongoose.Schema(
     type: {
       type: String,
       // WHY enum: keeps notification types consistent for frontend filtering
-      enum: ["new_member", "reservation", "system"],
+      enum: ["new_member", "reservation", "system", "menu_update"],
       required: true,
     },
 
@@ -18,6 +18,12 @@ const notificationSchema = new mongoose.Schema(
       type: String,
       required: true,
       // e.g. "New employee signup: John Doe (john@email.com) is waiting for approval."
+    },
+
+    triggeredBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+      // WHY: lets us show who triggered the notification (e.g. which employee signed up)
     },
 
     // WHY: Stores the _id of the related document so the owner can click
@@ -28,11 +34,19 @@ const notificationSchema = new mongoose.Schema(
       // Points to the Employee document for new_member type
       // Points to a Reservation document for reservation type
     },
-
-    read: {
-      type: Boolean,
-      default: false, // owner marks as read after viewing
+    visibleTo: {
+      type: String,
+      // WHY enum: keeps visibility consistent for frontend filtering
+      enum: ["owner", "coadmin", "all"],
+      default: "all",
     },
+
+    readBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Employee",
+      },
+    ],
   },
   { timestamps: true },
 );

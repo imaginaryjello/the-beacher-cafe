@@ -1,6 +1,7 @@
 // src/pages/Dashboard/Menueditor.jsx
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+// import ImageUpload from "../../components/ImageUpload";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -146,6 +147,13 @@ const ItemForm = ({ initial, onSave, onCancel, saving }) => {
           style={{ fontFamily: "Georgia, serif", resize: "none" }}
         />
       </div>
+
+      {/* <ImageUpload
+        currentImageUrl={form.imageUrl}
+        onUploadSuccess={({ url }) => set("imageUrl", url)}
+        token={token}
+        type="menu"
+      /> */}
 
       {/* Display order */}
       <div>
@@ -513,6 +521,7 @@ const MenuEditor = () => {
             onSave={handleAdd}
             onCancel={() => setShowAddForm(false)}
             saving={saving}
+            // token={token}
           />
         </div>
       )}
@@ -540,6 +549,7 @@ const MenuEditor = () => {
             onSave={handleEdit}
             onCancel={() => setEditingItem(null)}
             saving={saving}
+            // token={token}
           />
         </div>
       )}
