@@ -1,6 +1,6 @@
 // src/components/ImageUpload.jsx
 // WHY separate component: reused by MenuEditor, GalleryManager, SpecialsEditor
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -14,6 +14,17 @@ const ImageUpload = ({
   const [preview, setPreview] = useState(currentImageUrl || null);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
+  const localPreviewRef = useRef(null);
+
+  useEffect(
+    () => () => {
+      if (localPreviewRef.current) {
+        URL.revokeObjectURL(localPreviewRef.current);
+        localPreviewRef.current = null;
+      }
+    },
+    [],
+  );
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -22,6 +33,10 @@ const ImageUpload = ({
     // WHY local preview first: user sees the image instantly
     // without waiting for Cloudinary — better UX
     const localPreview = URL.createObjectURL(file);
+    if (localPreviewRef.current) {
+      URL.revokeObjectURL(localPreviewRef.current);
+    }
+    localPreviewRef.current = localPreview;
     setPreview(localPreview);
     setError(null);
     setUploading(true);
@@ -45,14 +60,26 @@ const ImageUpload = ({
 
       if (data.success) {
         // Replace local blob preview with real Cloudinary URL
+        if (localPreviewRef.current) {
+          URL.revokeObjectURL(localPreviewRef.current);
+          localPreviewRef.current = null;
+        }
         setPreview(data.imageUrl);
         // Pass URL up to parent form so it saves with the menu item
         onUploadSuccess(data.imageUrl);
       } else {
+        if (localPreviewRef.current) {
+          URL.revokeObjectURL(localPreviewRef.current);
+          localPreviewRef.current = null;
+        }
         setError(data.message || "Upload failed.");
         setPreview(currentImageUrl || null); // revert preview on error
       }
     } catch {
+      if (localPreviewRef.current) {
+        URL.revokeObjectURL(localPreviewRef.current);
+        localPreviewRef.current = null;
+      }
       setError("Network error during upload.");
       setPreview(currentImageUrl || null);
     } finally {
@@ -61,6 +88,10 @@ const ImageUpload = ({
   };
 
   const handleRemove = () => {
+    if (localPreviewRef.current) {
+      URL.revokeObjectURL(localPreviewRef.current);
+      localPreviewRef.current = null;
+    }
     setPreview(null);
     onUploadSuccess(""); // clear imageUrl in parent form
     if (fileInputRef.current) fileInputRef.current.value = "";

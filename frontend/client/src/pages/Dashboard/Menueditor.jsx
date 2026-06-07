@@ -148,13 +148,6 @@ const ItemForm = ({ initial, onSave, onCancel, saving }) => {
         />
       </div>
 
-      {/* <ImageUpload
-        currentImageUrl={form.imageUrl}
-        onUploadSuccess={({ url }) => set("imageUrl", url)}
-        token={token}
-        type="menu"
-      /> */}
-
       {/* Display order */}
       <div>
         <label className="block text-xs font-medium text-[#6b5a47] mb-1">
