@@ -236,7 +236,7 @@ router.patch("/approve/:id", verifyToken, requireAdmin, async (req, res) => {
     // Mark related notification as read
     Notification.findOneAndUpdate(
       { relatedId: req.params.id, type: "new_member" },
-      { read: true },
+      { $addToSet: { readBy: req.user.id } },
     ).catch(() => {}); // silent — don't block the response
 
     res.status(200).json({
@@ -326,7 +326,7 @@ router.patch("/promote/:id", verifyToken, requireAdmin, async (req, res) => {
       type: "system",
       message: `${updated.name} role has been changed to ${role} by the owner.`,
       relatedId: updated._id,
-    }).catch(() =>
+    }).catch((err) =>
       console.error("Failed to create role change notification:", err),
     );
 

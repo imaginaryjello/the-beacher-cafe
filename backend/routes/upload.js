@@ -65,16 +65,20 @@ router.delete("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
     if (!publicId) {
       return res.status(400).json({
         success: false,
-        message: "publicId is requied to delete an image",
+        message: "publicId is required to delete an image",
       });
     }
     const result = await cloudinary.uploader.destroy(publicId);
     if (result.result === "ok") {
-      res.json({
+      return res.json({
         success: true,
         message: "Image deleted successfully",
       });
     }
+    return res.status(400).json({
+      success: false,
+      message: "Image could not be deleted",
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

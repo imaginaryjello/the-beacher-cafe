@@ -40,7 +40,7 @@ router.get("/unread-count", verifyToken, async (req, res) => {
 // ─────────────────────────────────────────
 // GET /api/notifications
 // Returns notifications visible to current user
-// with a computed isRead field per user
+// with a computed read field per user
 // ─────────────────────────────────────────
 router.get("/", verifyToken, async (req, res) => {
   try {
@@ -51,7 +51,7 @@ router.get("/", verifyToken, async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(50);
 
-    // WHY computed isRead: we don't send the full readBy array to frontend
+    // WHY computed read: we don't send the full readBy array to frontend
     // (privacy — no need to expose who else has read it)
     // Instead we compute a simple boolean for this user only
     const formatted = notifications.map((n) => ({
@@ -61,7 +61,7 @@ router.get("/", verifyToken, async (req, res) => {
       relatedId: n.relatedId,
       visibleTo: n.visibleTo,
       createdAt: n.createdAt,
-      isRead: n.readBy.some((id) => id.toString() === userId.toString()),
+      read: n.readBy.some((id) => id.toString() === userId.toString()),
     }));
 
     res.json({
@@ -118,12 +118,16 @@ router.patch("/:id/read", verifyToken, async (req, res) => {
 
     res.json({
       success: true,
-      // Return computed isRead for this user
+      // Return computed read for this user
       notification: {
-        ...updated.toObject(),
-        isRead: updated.readBy.some(
-          (id) => id.toString() === userId.toString(),
-        ),
+        _id: updated._id,
+        type: updated.type,
+        message: updated.message,
+        relatedId: updated.relatedId,
+        visibleTo: updated.visibleTo,
+        createdAt: updated.createdAt,
+        updatedAt: updated.updatedAt,
+        read: updated.readBy.some((id) => id.toString() === userId.toString()),
       },
     });
   } catch (error) {

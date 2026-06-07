@@ -17,23 +17,25 @@ const Dashboard = () => {
 
   // Poll for unread notifications (owner only)
   // WHY polling not websocket: simpler for now, we'll upgrade later
-  // useEffect(() => {
-  //   if (!isOwner) return;
+  useEffect(() => {
+    if (!isOwner) return;
 
-  //   const fetchUnread = async () => {
-  //     try {
-  //       const res = await fetch(`${API}/api/notifications/unread-count`, {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       });
-  //       const data = await res.json();
-  //       if (data.success) setUnreadCount(data.count);
-  //     } catch (_) {}
-  //   };
+    const fetchUnread = async () => {
+      try {
+        const res = await fetch(`${API}/api/notifications/unread-count`, {
+          headers: { Authorization: "Bearer " + token },
+        });
+        const data = await res.json();
+        if (data.success) setUnreadCount(data.count);
+      } catch {
+        // ignore polling errors
+      }
+    };
 
-  //   fetchUnread();
-  //   const interval = setInterval(fetchUnread, 30000); // every 30 seconds
-  //   return () => clearInterval(interval);
-  // }, [isOwner, token]);
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000); // every 30 seconds
+    return () => clearInterval(interval);
+  }, [API, isOwner, token]);
 
   const navLinks = [
     { to: "/dashboard", label: "Dashboard Home", icon: "🏠" },
