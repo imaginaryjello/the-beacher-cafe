@@ -60,7 +60,7 @@ function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<Settings page="Dashboard Hom" />} />
+            <Route index element={<Settings page="Dashboard" />} />
             <Route path="members" element={<Members />} />
             <Route path="menu" element={<MenuEditor />} />
             <Route
@@ -72,6 +72,7 @@ function App() {
               element={<ComingSoon page="Gallery Manager" />}
             />
             <Route path="reservations" element={<ReservationsList />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
 
           {/* UNAUTHORIZED */}

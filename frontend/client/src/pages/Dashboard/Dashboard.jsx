@@ -147,6 +147,7 @@ const Dashboard = () => {
               {location.pathname === "/dashboard/gallery" && "Gallery Manager"}
               {location.pathname === "/dashboard/reservations" &&
                 "Reservations"}
+              {location.pathname === "/dashboard/settings" && "Settings"}
             </h2>
           </div>
 
