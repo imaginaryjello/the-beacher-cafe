@@ -42,6 +42,9 @@ const Dashboard = () => {
     { to: "/dashboard/specials", label: "Specials Editor", icon: "⭐" },
     { to: "/dashboard/gallery", label: "Gallery Manager", icon: "🖼️" },
     { to: "/dashboard/reservations", label: "Reservations", icon: "📅" },
+    ...(isOwner
+      ? [{ to: "/dashboard/settings", label: "Settings", icon: "⚙️" }]
+      : []),
   ];
 
   return (

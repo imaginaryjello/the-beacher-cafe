@@ -55,6 +55,7 @@ export const requireAdmin = (req, res, next) => {
       message: "Access denied. Owner privileges required.",
     });
   }
+
   next();
 };
 

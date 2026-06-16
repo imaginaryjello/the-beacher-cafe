@@ -357,7 +357,54 @@ const Menu = () => {
               />
             </div>
           </section>
-
+          {/* Desserts */}
+          <section className="bg-white border border-[#e8d9b8] rounded-3xl p-10 shadow mb-12">
+            <h2 className="text-4xl font-bold text-center mb-10">
+              DECADENT DESSERTS
+            </h2>
+            {loading ? (
+              <div className="grid md:grid-cols-2 gap-4">
+                {[1, 2].map((i) => (
+                  <SkeletonRow key={i} />
+                ))}
+              </div>
+            ) : byCategory("dessert").length > 0 ? (
+              <div className="grid md:grid-cols-2 gap-4 text-lg">
+                {byCategory("dessert").map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex justify-between border-b border-[#e8d9b8] pb-3"
+                  >
+                    <div>
+                      <span>{item.name}</span>
+                      {item.description && (
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                    <span className="font-bold">
+                      ${Number(item.price).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // Static fallback
+              <div className="grid md:grid-cols-2 gap-10 text-lg leading-relaxed">
+                <div>
+                  Chocolate Mousse $10 • New York Cheesecake $10
+                  <br />
+                  Carrot Cake $9 • Apple Crumble $9
+                </div>
+                <div>
+                  Ice Cream Sundae $8 (Chocolate, Strawberry, Vanilla)
+                  <br />
+                  Belgian Waffle $12 with Ice Cream & Chocolate Sauce
+                </div>
+              </div>
+            )}
+          </section>
           {/* ── BEVERAGES ── */}
           <section className="bg-white border border-[#e8d9b8] rounded-3xl p-10 shadow mb-12">
             <h2 className="text-4xl font-bold text-center mb-10">
