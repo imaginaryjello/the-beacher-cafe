@@ -42,6 +42,9 @@ const Dashboard = () => {
     { to: "/dashboard/specials", label: "Specials Editor", icon: "⭐" },
     { to: "/dashboard/gallery", label: "Gallery Manager", icon: "🖼️" },
     { to: "/dashboard/reservations", label: "Reservations", icon: "📅" },
+    ...(isOwner
+      ? [{ to: "/dashboard/settings", label: "Settings", icon: "⚙️" }]
+      : []),
   ];
 
   return (
@@ -144,6 +147,7 @@ const Dashboard = () => {
               {location.pathname === "/dashboard/gallery" && "Gallery Manager"}
               {location.pathname === "/dashboard/reservations" &&
                 "Reservations"}
+              {location.pathname === "/dashboard/settings" && "Settings"}
             </h2>
           </div>
 

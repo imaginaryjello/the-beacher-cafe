@@ -1,52 +1,58 @@
-// model/notificationSchema.js
+// backend/model/notificationSchema.js
 import mongoose from "mongoose";
 
-// WHY this model exists:
-// When an employee signs up, we create a Notification document.
-// The owner's dashboard fetches unread notifications and shows a bell badge.
-// This is separate from the Twilio email — both happen in parallel.
 const notificationSchema = new mongoose.Schema(
   {
     type: {
       type: String,
-      // WHY enum: keeps notification types consistent for frontend filtering
-      enum: ["new_member", "reservation", "system", "menu_update"],
+      enum: [
+        "new_member",
+        "member_approved",
+        "role_change",
+        "menu_change",
+        "gallery_change",
+        "reservation",
+        "system",
+      ],
       required: true,
     },
-
     message: {
       type: String,
       required: true,
-      // e.g. "New employee signup: John Doe (john@email.com) is waiting for approval."
     },
-
-    triggeredBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Employee",
-      // WHY: lets us show who triggered the notification (e.g. which employee signed up)
-    },
-
-    // WHY: Stores the _id of the related document so the owner can click
-    // the notification and go directly to that employee's approval card.
     relatedId: {
       type: mongoose.Schema.Types.ObjectId,
       default: null,
-      // Points to the Employee document for new_member type
-      // Points to a Reservation document for reservation type
     },
+    // WHO TRIGGERED THIS — employee who did the action
+    triggeredBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+      default: null,
+    },
+    // WHO CAN SEE THIS
+    // "owner"   → admin only
+    // "coadmin" → admin + coadmin
+    // "all"     → everyone
     visibleTo: {
       type: String,
-      // WHY enum: keeps visibility consistent for frontend filtering
       enum: ["owner", "coadmin", "all"],
-      default: "all",
+      default: "owner",
     },
-
+    // PER-USER READ TRACKING
+    // unread for me = my _id NOT in this array
     readBy: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Employee",
       },
     ],
+    // EXTRA CONTEXT — flexible object for any additional data
+    // e.g. { action: "added", itemName: "Eggs Benedict", price: 16.99 }
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
   },
   { timestamps: true },
 );

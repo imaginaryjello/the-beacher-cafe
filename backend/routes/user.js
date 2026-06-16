@@ -6,6 +6,11 @@ import Employee from "../model/employeeSchema.js";
 import Notification from "../model/notificationSchema.js";
 import { verifyToken, requireAdmin } from "../middleware/auth.js";
 
+const fireNotification = (data) => {
+  Notification.create(data).catch((err) =>
+    console.error("[Notification] Failed to create:", err.message),
+  );
+};
 const router = express.Router();
 
 // ============================================
@@ -239,6 +244,18 @@ router.patch("/approve/:id", verifyToken, requireAdmin, async (req, res) => {
       { read: true },
     ).catch(() => {}); // silent — don't block the response
 
+    fireNotification({
+      type: "member_approved",
+      message: `${updated.name} has been approved and joined the team.`,
+      relatedId: updated._id,
+      triggeredBy: req.user.id,
+      visibleTo: "all", //whole team can see the new memeber joined
+      metadata: {
+        action: "approved",
+        employeeName: updated.name,
+      },
+    });
+
     res.status(200).json({
       success: true,
       message: `${updated.name} has been approved.`,
@@ -329,6 +346,18 @@ router.patch("/promote/:id", verifyToken, requireAdmin, async (req, res) => {
     }).catch(() =>
       console.error("Failed to create role change notification:", err),
     );
+    fireNotification({
+      type: "role_change",
+      message: `${updated.name} has been ${role === "coadmin" ? "promoted to Co-Admin" : "changed to Employee"}.`,
+      relatedId: updated._id,
+      triggeredBy: req.user.id,
+      visibleTo: "coadmin", // owner + coadmin see role changes
+      metadata: {
+        action: "role_change",
+        employeeName: updated.name,
+        newRole: role,
+      },
+    });
 
     res.status(200).json({
       success: true,
@@ -365,6 +394,15 @@ router.patch("/deactivate/:id", verifyToken, requireAdmin, async (req, res) => {
         .status(404)
         .json({ success: false, message: "Employee not found" });
     }
+
+    fireNotification({
+      type: "system",
+      message: `${updated.name}'s account has been deactivated.`,
+      relatedId: updated._id,
+      triggeredBy: req.user.id,
+      visibleTo: "owner", // only owner needs to know
+      metadata: { action: "deactivated", employeeName: updated.name },
+    });
 
     res.status(200).json({
       success: true,

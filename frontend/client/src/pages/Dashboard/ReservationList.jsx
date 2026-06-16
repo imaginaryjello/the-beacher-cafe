@@ -6,6 +6,18 @@ import Footer from "./footer";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+// Map a date string to the settings day key
+const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+// Format "08:00" → "8:00 AM"
+const fmt = (t) => {
+  if (!t) return "";
+  const [h, m] = t.split(":");
+  const hr = parseInt(h);
+  const ampm = hr >= 12 ? "PM" : "AM";
+  return `${hr % 12 || 12}:${m} ${ampm}`;
+};
+
 export default function Reservations() {
   const [form, setForm] = useState({
     name: "",
@@ -15,14 +27,13 @@ export default function Reservations() {
     date: "",
     time: "",
     notes: "",
-    website: "", // HONEYPOT — hidden, bots fill it, humans don't
+    website: "", // website = honeypot
   });
   const [settings, setSettings] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
-  // Load café hours/rules so the form reflects current settings
   useEffect(() => {
     axios
       .get(`${API}/api/settings`)
@@ -36,6 +47,14 @@ export default function Reservations() {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError(null);
   };
+
+  // FIX: derive the SELECTED day's hours from per-day settings.hours
+  // (replaces the old flat settings.openTime / settings.closeTime)
+  const selectedDayHours = (() => {
+    if (!settings?.hours || !form.date) return null;
+    const dayKey = DAY_KEYS[new Date(form.date + "T00:00").getDay()];
+    return settings.hours[dayKey] || null;
+  })();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,16 +71,6 @@ export default function Reservations() {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  // Format hours nicely (08:00 → 8:00 AM)
-  const fmt = (t) => {
-    if (!t) return "";
-    const [h, m] = t.split(":");
-    const hr = parseInt(h);
-    const ampm = hr >= 12 ? "PM" : "AM";
-    const h12 = hr % 12 || 12;
-    return `${h12}:${m} ${ampm}`;
   };
 
   const today = new Date().toISOString().split("T")[0];
@@ -130,15 +139,18 @@ export default function Reservations() {
           >
             A seat will be waiting for you.
           </p>
-          {settings && (
-            <p
-              className="text-center text-[#c2410c] text-sm mb-8"
-              style={{ fontFamily: "Georgia, serif" }}
-            >
-              Open daily {fmt(settings.openTime)} – {fmt(settings.closeTime)} ·
-              Est. 1986
-            </p>
-          )}
+
+          {/* FIX: per-day hours hint instead of the old flat openTime/closeTime */}
+          <p
+            className="text-center text-[#c2410c] text-sm mb-8"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
+            {form.date && selectedDayHours
+              ? selectedDayHours.closed
+                ? "We're closed on the selected day"
+                : `Open ${fmt(selectedDayHours.open)} – ${fmt(selectedDayHours.close)} on this day`
+              : "Hours vary by day · Est. 1986"}
+          </p>
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-5 text-sm text-center">
@@ -177,7 +189,7 @@ export default function Reservations() {
               className="w-full p-3 border border-[#c2410c] rounded focus:outline-none focus:ring-2 focus:ring-[#c2410c]/30"
             />
 
-            {/* HONEYPOT — hidden from real users via CSS, bots still fill it */}
+            {/* HONEYPOT — hidden from humans */}
             <input
               type="text"
               name="website"
@@ -185,6 +197,7 @@ export default function Reservations() {
               onChange={handleChange}
               tabIndex="-1"
               autoComplete="off"
+              aria-hidden="true"
               style={{
                 position: "absolute",
                 left: "-9999px",
@@ -192,7 +205,6 @@ export default function Reservations() {
                 height: 0,
                 width: 0,
               }}
-              aria-hidden="true"
             />
 
             <div>
@@ -230,18 +242,27 @@ export default function Reservations() {
                 <label className="block text-sm text-[#6b5a47] mb-1">
                   Time
                 </label>
+                {/* FIX: min/max from the selected day's hours, disabled if closed */}
                 <input
                   type="time"
                   name="time"
                   value={form.time}
                   onChange={handleChange}
                   required
-                  min={settings?.openTime}
-                  max={settings?.closeTime}
-                  className="w-full p-3 border border-[#c2410c] rounded focus:outline-none focus:ring-2 focus:ring-[#c2410c]/30"
+                  min={selectedDayHours?.open}
+                  max={selectedDayHours?.close}
+                  disabled={selectedDayHours?.closed}
+                  className="w-full p-3 border border-[#c2410c] rounded focus:outline-none focus:ring-2 focus:ring-[#c2410c]/30 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
+
+            {/* Helpful inline note when the chosen day is closed */}
+            {form.date && selectedDayHours?.closed && (
+              <p className="text-sm text-red-600 text-center">
+                We're closed that day — please pick another date.
+              </p>
+            )}
 
             <textarea
               name="notes"
@@ -254,7 +275,7 @@ export default function Reservations() {
 
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || selectedDayHours?.closed}
               className="w-full bg-[#c2410c] text-white py-3 rounded-full font-semibold hover:bg-[#9a3410] transition-colors disabled:opacity-50"
             >
               {submitting ? "Sending..." : "Confirm Reservation"}

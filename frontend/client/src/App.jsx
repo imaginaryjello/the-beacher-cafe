@@ -18,7 +18,8 @@ import Members from "./pages/Dashboard/Members";
 import MenuEditor from "./pages/Dashboard/Menueditor"; // next step
 // import SpecialsEditor from "./pages/Dashboard/SpecialsEditor";
 // import GalleryManager from "./pages/Dashboard/GalleryManager";
-// import ReservationsList from "./pages/Dashboard/ReservationsList";
+import ReservationsList from "./pages/Dashboard/ReservationList";
+import Settings from "./pages/Dashboard/Settings";
 
 // Placeholder for unbuilt pages
 const ComingSoon = ({ page }) => (
@@ -59,7 +60,7 @@ function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<ComingSoon page="Dashboard Home" />} />
+            <Route index element={<Settings page="Dashboard" />} />
             <Route path="members" element={<Members />} />
             <Route path="menu" element={<MenuEditor />} />
             <Route
@@ -70,10 +71,8 @@ function App() {
               path="gallery"
               element={<ComingSoon page="Gallery Manager" />}
             />
-            <Route
-              path="reservations"
-              element={<ComingSoon page="Reservations" />}
-            />
+            <Route path="reservations" element={<ReservationsList />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
 
           {/* UNAUTHORIZED */}

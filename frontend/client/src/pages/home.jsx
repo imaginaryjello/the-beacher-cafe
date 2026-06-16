@@ -8,7 +8,14 @@ import Reservations from "./reservation";
 import Register from "./register";
 import Footer from "./footer";
 
+import { useSettings, formatHoursDisplay } from "../components/useSettings";
+import AnnouncementBanner from "../components/AnnouncementBanner";
+
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 function Home() {
+  const { settings } = useSettings();
+  const hoursGroups = settings ? formatHoursDisplay(settings.hours) : [];
   return (
     <>
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden ">
@@ -182,6 +189,7 @@ function Home() {
           <ImageGrid src="/image copy 11.png" alt="Image" />
         </div>
       </div>
+
       {/* Visit Us */}
       <section className="w-full max-w-4xl mx-auto mt-20 px-4">
         <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-lg bg-white">
@@ -190,9 +198,10 @@ function Home() {
             <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
               Visit Us
             </h2>
+            <AnnouncementBanner />
+
             <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 text-gray-500 text-sm">
               <span className="flex items-center gap-1.5">
-                {/* Pin icon */}
                 <svg
                   className="w-4 h-4 text-rose-500 shrink-0"
                   fill="currentColor"
@@ -204,10 +213,9 @@ function Home() {
                     clipRule="evenodd"
                   />
                 </svg>
-                2164 Queen St E, Toronto, ON M4E 1E5
+                {settings?.address || "2164 Queen St E, Toronto, ON M4E 1E5"}
               </span>
               <span className="flex items-center gap-1.5">
-                {/* Clock icon */}
                 <svg
                   className="w-4 h-4 text-emerald-500 shrink-0"
                   fill="none"
@@ -218,6 +226,9 @@ function Home() {
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 6v6l4 2" />
                 </svg>
+                {hoursGroups.length > 0
+                  ? hoursGroups.map((g) => `${g.days}: ${g.time}`).join(" · ")
+                  : "Open daily"}
               </span>
             </div>
           </div>
