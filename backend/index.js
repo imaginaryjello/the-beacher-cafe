@@ -2,12 +2,15 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import helmet from "helmet";
 
 import router from "./routes/user.js";
 import menuRouter from "./routes/menu.js";
 import upload from "./routes/upload.js";
 import reservationRouter from "./routes/reservations.js";
 import settingsRouter from "./routes/settings.js";
+import galleryRouter from "./routes/gallery.js";
+import specialsRouter from "./routes/specials.js";
 
 import notificationRouter from "./routes/notifications.js";
 
@@ -16,6 +19,7 @@ import { startCronJobs } from "./utils/cronjobs.js";
 dotenv.config();
 
 const app = express();
+app.use(helmet());
 app.use(express.json());
 app.use(cors());
 
@@ -37,5 +41,5 @@ app.use("/api/upload", upload);
 app.use("/api/notifications", notificationRouter);
 app.use("/api/reservations", reservationRouter);
 app.use("/api/settings", settingsRouter);
-// app.use("/api/employee", employeeRouter);
-// app.use("/api/notification", notificationRouter);
+app.use("/api/gallery", galleryRouter);
+app.use("/api/specials", specialsRouter);

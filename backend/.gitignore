@@ -13,6 +13,7 @@ dist-ssr
 *.local
 *.png
 *.jpg
+./script.js
 
 
 # Editor directories and files

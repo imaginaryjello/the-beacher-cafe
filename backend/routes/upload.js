@@ -1,5 +1,9 @@
 import express from "express";
-import { cloudinary, upload } from "../config/cloudinary.js";
+import {
+  cloudinary,
+  upload,
+  uploadToCloudinary,
+} from "../config/cloudinary.js";
 import { verifyToken, requireCoAdminOrAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
@@ -20,12 +24,8 @@ router.post(
   "/",
   verifyToken,
   requireCoAdminOrAdmin,
-  // WHY: upload.single("image") is multer middleware that processes the file upload.
-  // It looks for a file field named "image" in the multipart/form-data request.
-  // After processing, it attaches the file info to req.file and calls next().
-  //multer processes it and puts cloudinary result in req.file
   upload.single("image"),
-  (req, res) => {
+  async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({
@@ -34,15 +34,17 @@ router.post(
         });
       }
 
-      //Why req.file.path: CLoudinaryStorage puts the uploaded image's URL in req.file.path, so we return that to the frontend
-      // req.file.filename is the public_id (used if you want to delete later)
+      // Stream the in-memory buffer to Cloudinary, routing by ?type=
+      const result = await uploadToCloudinary(req.file.buffer, req.query.type);
+
       res.status(200).json({
         success: true,
-        imageUrl: req.file.path, //full cloudinary URL -save this in mongodb
-        publicId: req.file.filename,
+        imageUrl: result.secure_url, // full Cloudinary URL — save in MongoDB
+        publicId: result.public_id, // used for deletion later
         message: "Image uploaded successfully",
       });
     } catch (error) {
+      console.error("Upload error:", error);
       res.status(500).json({
         success: false,
         message: "Server error while uploading image",
@@ -50,6 +52,16 @@ router.post(
     }
   },
 );
+
+// WHY this error handler exists: multer calls next(err) when a file is rejected
+// (wrong type, too large). Without this, Express returns an HTML 500 page instead
+// of JSON, which confuses the frontend into showing "network error".
+router.use((err, req, res, next) => {
+  res.status(400).json({
+    success: false,
+    message: err.message || "File upload error",
+  });
+});
 
 // ============================================
 // DELETE /API/UPLOAD/:publicId

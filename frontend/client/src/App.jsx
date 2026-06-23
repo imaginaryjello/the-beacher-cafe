@@ -16,8 +16,7 @@ import Login from "./pages/login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Members from "./pages/Dashboard/Members";
 import MenuEditor from "./pages/Dashboard/Menueditor"; // next step
-// import SpecialsEditor from "./pages/Dashboard/SpecialsEditor";
-// import GalleryManager from "./pages/Dashboard/GalleryManager";
+import GalleryManager from "./pages/Dashboard/GalleryManager";
 import ReservationsList from "./pages/Dashboard/ReservationList";
 import Settings from "./pages/Dashboard/Settings";
 
@@ -63,14 +62,11 @@ function App() {
             <Route index element={<Settings page="Dashboard" />} />
             <Route path="members" element={<Members />} />
             <Route path="menu" element={<MenuEditor />} />
-            <Route
-              path="specials"
-              element={<ComingSoon page="Specials Editor" />}
-            />
-            <Route
-              path="gallery"
-              element={<ComingSoon page="Gallery Manager" />}
-            />
+            {/* WHY both routes render GalleryManager: specials and gallery live
+                in one tabbed page. /specials defaults the active tab to "specials"
+                via state, but the component handles tab switching internally */}
+            <Route path="specials" element={<GalleryManager defaultTab="specials" />} />
+            <Route path="gallery" element={<GalleryManager defaultTab="gallery" />} />
             <Route path="reservations" element={<ReservationsList />} />
             <Route path="settings" element={<Settings />} />
           </Route>

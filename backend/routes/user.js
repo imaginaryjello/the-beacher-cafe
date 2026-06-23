@@ -5,12 +5,23 @@ import jwt from "jsonwebtoken"; // ← ADD THIS
 import Employee from "../model/employeeSchema.js";
 import Notification from "../model/notificationSchema.js";
 import { verifyToken, requireAdmin } from "../middleware/auth.js";
+import rateLimit from "express-rate-limit"; //
 
 const fireNotification = (data) => {
   Notification.create(data).catch((err) =>
     console.error("[Notification] Failed to create:", err.message),
   );
 };
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message: {
+    success: false,
+    message:
+      "Too many requests from this IP, please try again after 15 minutes",
+  },
+});
 const router = express.Router();
 
 // ============================================
@@ -24,7 +35,7 @@ const router = express.Router();
 //   4. A Notification document is created for the owner
 //   5. NO JWT issued on register — employee waits for approval
 // ============================================
-router.post("/register", async (req, res) => {
+router.post("/register", authLimiter, async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
     // WHY: We destructure `role` out — we do NOT use it.
@@ -100,11 +111,11 @@ router.post("/register", async (req, res) => {
 //   3. Login is NOT blocked for pending users —
 //      the frontend reads the token and decides what to show
 // ============================================
-router.post("/login", async (req, res) => {
+router.post("/login", authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const employeeData = await Employee.findOne({ email });
+    const employeeData = await Employee.findOne({ email }).select("+password"); // WHY: we need the hashed password for comparison
 
     if (!employeeData) {
       return res.status(404).json({
@@ -172,7 +183,7 @@ router.post("/login", async (req, res) => {
 // WHAT CHANGES: Now protected by verifyToken + requireAccepted (implicit via verifyToken)
 // WHY: Before, any unauthenticated request could see all employee records.
 // ============================================
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     const employees = await Employee.find().select("-password");
 
