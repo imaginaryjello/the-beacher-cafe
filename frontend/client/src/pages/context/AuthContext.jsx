@@ -44,8 +44,19 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
   };
 
+  // WHY updateUser: after the user edits their profile (name/phone), we need to
+  // sync those changes into localStorage and state so the sidebar shows the new
+  // name immediately without requiring a re-login.
+  const updateUser = (updates) => {
+    const updated = { ...user, ...updates };
+    localStorage.setItem("user", JSON.stringify(updated));
+    setUser(updated);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, token, login, logout, loading, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

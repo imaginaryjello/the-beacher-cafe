@@ -45,6 +45,7 @@ const Dashboard = () => {
     ...(isOwner
       ? [{ to: "/dashboard/settings", label: "Settings", icon: "⚙️" }]
       : []),
+    { to: "/dashboard/profile", label: "My Profile", icon: "👤" },
   ];
 
   return (
@@ -148,6 +149,7 @@ const Dashboard = () => {
               {location.pathname === "/dashboard/reservations" &&
                 "Reservations"}
               {location.pathname === "/dashboard/settings" && "Settings"}
+              {location.pathname === "/dashboard/profile" && "Profile"}
             </h2>
           </div>
 

@@ -19,6 +19,9 @@ import MenuEditor from "./pages/Dashboard/Menueditor"; // next step
 import GalleryManager from "./pages/Dashboard/GalleryManager";
 import ReservationsList from "./pages/Dashboard/ReservationList";
 import Settings from "./pages/Dashboard/Settings";
+import Profile from "./pages/Dashboard/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Placeholder for unbuilt pages
 const ComingSoon = ({ page }) => (
@@ -49,6 +52,8 @@ function App() {
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* DASHBOARD — nested routes so sidebar stays mounted */}
           <Route
@@ -65,8 +70,16 @@ function App() {
             {/* WHY both routes render GalleryManager: specials and gallery live
                 in one tabbed page. /specials defaults the active tab to "specials"
                 via state, but the component handles tab switching internally */}
-            <Route path="specials" element={<GalleryManager defaultTab="specials" />} />
-            <Route path="gallery" element={<GalleryManager defaultTab="gallery" />} />
+            <Route
+              path="specials"
+              element={<GalleryManager defaultTab="specials" />}
+            />
+            <Route
+              path="gallery"
+              element={<GalleryManager defaultTab="gallery" />}
+            />
+            <Route path="profile" element={<Profile />} />
+
             <Route path="reservations" element={<ReservationsList />} />
             <Route path="settings" element={<Settings />} />
           </Route>
