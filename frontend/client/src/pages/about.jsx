@@ -89,7 +89,7 @@ export default function About() {
             <p className="text-[#c2410c] text-sm tracking-[4px] uppercase mb-4">
               Est. 1986 • Queen Street East, Toronto
             </p>
-            <h1 className="font-[Pacifico] text-[#f5e8c7] text-6xl md:text-7xl mb-6">
+            <h1 className="font-[Pacifico] text-[#f5e8c7] text-5xl sm:text-6xl md:text-7xl mb-6">
               Our Story
             </h1>
             <p className="text-[#d4b896] text-lg italic leading-relaxed">
@@ -165,12 +165,12 @@ export default function About() {
               Nearly Four Decades on This Corner
             </h2>
 
-            <div className="space-y-12 relative pl-12 border-l-2 border-[#c2410c]/30">
+            <div className="space-y-12 relative pl-8 sm:pl-12 border-l-2 border-[#c2410c]/30">
               {TIMELINE.map((item, i) => (
                 <div key={i} className="relative">
-                  <div className="absolute -left-6 w-10 h-10 bg-[#c2410c] rounded-full border-4 border-[#3f2a1d]" />
-                  <div className="bg-white border border-[#c2410c] rounded-xl p-6 shadow">
-                    <div className="flex justify-between mb-2">
+                  <div className="absolute -left-6 w-8 h-8 sm:w-10 sm:h-10 bg-[#c2410c] rounded-full border-4 border-[#3f2a1d]" />
+                  <div className="bg-white border border-[#c2410c] rounded-xl p-4 sm:p-6 shadow">
+                    <div className="flex justify-between flex-wrap gap-x-3 mb-2">
                       <h3 className="font-bold text-xl">{item.title}</h3>
                       <span className="text-[#c2410c] font-bold">
                         {item.year}
@@ -196,13 +196,13 @@ export default function About() {
           <div className="flex justify-center gap-4 mt-10">
             <button
               onClick={prevQuote}
-              className="px-4 py-2 border border-[#c2410c] text-sm"
+              className="px-6 py-3 border border-[#c2410c] text-sm"
             >
               Previous
             </button>
             <button
               onClick={nextQuote}
-              className="px-4 py-2 border border-[#c2410c] text-sm"
+              className="px-6 py-3 border border-[#c2410c] text-sm"
             >
               Next
             </button>
@@ -244,7 +244,7 @@ export default function About() {
           <img
             src="/image copy 8.png"
             alt="The History"
-            className="mx-auto rounded-2xl shadow-xl max-w-4xl border-8 border-[#3f2a1d]"
+            className="mx-auto w-full max-w-4xl rounded-2xl shadow-xl border-8 border-[#3f2a1d]"
           />
         </section>
 

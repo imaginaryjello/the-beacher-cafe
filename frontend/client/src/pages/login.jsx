@@ -54,8 +54,8 @@ export default function Login() {
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-[#f5e8c7] pt-28 px-6 pb-20">
-        <div className="max-w-md mx-auto bg-white border-4 border-[#3f2a1d] rounded-3xl p-10 shadow-xl">
+      <div className="min-h-screen bg-[#f5e8c7] pt-28 px-4 sm:px-6 pb-20">
+        <div className="max-w-md mx-auto bg-white border-4 border-[#3f2a1d] rounded-3xl p-6 sm:p-10 shadow-xl">
           <div className="text-center mb-10">
             <h1 className="text-4xl font-bold text-[#3f2a1d] mb-2">
               Welcome Back
