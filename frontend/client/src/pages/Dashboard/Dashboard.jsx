@@ -53,8 +53,8 @@ const Dashboard = () => {
     <div className="min-h-screen bg-[#f5e8c7] flex">
       {/* ====================== SIDEBAR ====================== */}
       <div
-        className={`fixed md:static inset-y-0 left-0 z-50 w-72 bg-white border-r border-[#3f2a1d] shadow-xl transition-transform duration-300 flex flex-col
-        ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+        className={`fixed md:static inset-y-0 left-0 z-50 w-72 bg-white border-r border-[#3f2a1d] md:shadow-xl transition-transform duration-300 flex flex-col
+        ${mobileMenuOpen ? "translate-x-0 shadow-xl" : "-translate-x-full md:translate-x-0"}`}
       >
         {/* Logo */}
         <div className="p-6 border-b border-[#3f2a1d]">
