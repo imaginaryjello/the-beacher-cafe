@@ -164,11 +164,11 @@ const ReservationsList = () => {
                   </div>
                 </div>
                 {r.status === "pending" && (
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex gap-2 shrink-0">
                     <button
                       onClick={() => updateStatus(r._id, "confirmed")}
                       disabled={actionLoading}
-                      className="bg-green-600 text-white text-xs px-4 py-2 rounded-full hover:bg-green-700 disabled:opacity-50"
+                      className="bg-green-600 text-white text-xs px-4 py-2.5 sm:py-2 rounded-full hover:bg-green-700 disabled:opacity-50"
                       style={{ fontFamily: "Georgia, serif" }}
                     >
                       Confirm
@@ -176,7 +176,7 @@ const ReservationsList = () => {
                     <button
                       onClick={() => updateStatus(r._id, "cancelled")}
                       disabled={actionLoading}
-                      className="border border-red-500 text-red-500 text-xs px-4 py-2 rounded-full hover:bg-red-50 disabled:opacity-50"
+                      className="border border-red-500 text-red-500 text-xs px-4 py-2.5 sm:py-2 rounded-full hover:bg-red-50 disabled:opacity-50"
                       style={{ fontFamily: "Georgia, serif" }}
                     >
                       Decline
@@ -187,7 +187,7 @@ const ReservationsList = () => {
                   <button
                     onClick={() => updateStatus(r._id, "completed")}
                     disabled={actionLoading}
-                    className="border border-[#3f2a1d] text-[#3f2a1d] text-xs px-4 py-2 rounded-full hover:bg-[#f5e8c7] disabled:opacity-50 flex-shrink-0"
+                    className="border border-[#3f2a1d] text-[#3f2a1d] text-xs px-4 py-2.5 sm:py-2 rounded-full hover:bg-[#f5e8c7] disabled:opacity-50 shrink-0"
                     style={{ fontFamily: "Georgia, serif" }}
                   >
                     Mark Completed

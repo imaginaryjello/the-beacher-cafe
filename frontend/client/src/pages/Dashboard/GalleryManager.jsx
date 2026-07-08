@@ -698,7 +698,7 @@ const SpecialsTab = ({ token }) => {
           {specials.map((item) => (
             <div
               key={item._id}
-              className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${
+              className={`flex flex-wrap items-center gap-3 p-4 rounded-xl border transition-all ${
                 item.active ? "bg-white border-[#3f2a1d]/10" : "bg-gray-50 border-gray-200 opacity-60"
               }`}
             >
@@ -732,34 +732,35 @@ const SpecialsTab = ({ token }) => {
                 )}
               </div>
 
-              {/* Price */}
-              <span className="text-base font-bold text-[#c2410c] shrink-0" style={{ fontFamily: "Georgia, serif" }}>
-                ${Number(item.price).toFixed(2)}
-              </span>
+              {/* Price + actions: own full-width row on phones, inline from sm+ */}
+              <div className="flex items-center justify-between gap-3 w-full sm:w-auto">
+                <span className="text-base font-bold text-[#c2410c] shrink-0" style={{ fontFamily: "Georgia, serif" }}>
+                  ${Number(item.price).toFixed(2)}
+                </span>
 
-              {/* Actions */}
-              <div className="flex gap-1 shrink-0">
-                <button
-                  onClick={() => handleToggleActive(item)}
-                  title={item.active ? "Deactivate (hide from home page)" : "Activate (show on home page)"}
-                  className="p-1.5 rounded-lg hover:bg-[#f5e8c7] transition-colors text-sm"
-                >
-                  {item.active ? "🟢" : "⭕"}
-                </button>
-                <button
-                  onClick={() => { setEditingItem(item); setShowAddForm(false); }}
-                  className="p-1.5 rounded-lg hover:bg-[#f5e8c7] transition-colors text-sm"
-                  title="Edit"
-                >
-                  ✏️
-                </button>
-                <button
-                  onClick={() => setDeletingItem(item)}
-                  className="p-1.5 rounded-lg hover:bg-red-50 transition-colors text-sm"
-                  title="Delete"
-                >
-                  🗑️
-                </button>
+                <div className="flex gap-1 shrink-0">
+                  <button
+                    onClick={() => handleToggleActive(item)}
+                    title={item.active ? "Deactivate (hide from home page)" : "Activate (show on home page)"}
+                    className="p-2.5 sm:p-1.5 rounded-lg hover:bg-[#f5e8c7] transition-colors text-lg sm:text-sm"
+                  >
+                    {item.active ? "🟢" : "⭕"}
+                  </button>
+                  <button
+                    onClick={() => { setEditingItem(item); setShowAddForm(false); }}
+                    className="p-2.5 sm:p-1.5 rounded-lg hover:bg-[#f5e8c7] transition-colors text-lg sm:text-sm"
+                    title="Edit"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={() => setDeletingItem(item)}
+                    className="p-2.5 sm:p-1.5 rounded-lg hover:bg-red-50 transition-colors text-lg sm:text-sm"
+                    title="Delete"
+                  >
+                    🗑️
+                  </button>
+                </div>
               </div>
             </div>
           ))}

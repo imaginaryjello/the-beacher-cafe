@@ -162,7 +162,7 @@ const EmployeeCard = ({
       <div className="flex items-start justify-between gap-3">
         {/* Left: avatar + info */}
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-11 h-11 rounded-full bg-[#3f2a1d] flex items-center justify-center flex-shrink-0">
+          <div className="w-11 h-11 rounded-full bg-[#3f2a1d] flex items-center justify-center shrink-0">
             <span className="text-[#f5e8c7] font-bold text-lg">
               {emp.name?.charAt(0).toUpperCase()}
             </span>
@@ -180,7 +180,7 @@ const EmployeeCard = ({
         </div>
 
         {/* Right: badges */}
-        <div className="flex flex-col gap-1 items-end flex-shrink-0">
+        <div className="flex flex-col gap-1 items-end shrink-0">
           <RoleBadge role={emp.role} />
           <StatusBadge status={emp.status} />
         </div>
@@ -191,7 +191,7 @@ const EmployeeCard = ({
         {/* View profile — everyone can do this */}
         <button
           onClick={() => onView(emp)}
-          className="text-xs px-3 py-1.5 rounded-full border border-[#3f2a1d] text-[#3f2a1d] hover:bg-[#f5e8c7] transition-colors"
+          className="text-xs px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-full border border-[#3f2a1d] text-[#3f2a1d] hover:bg-[#f5e8c7] transition-colors"
           style={{ fontFamily: "Georgia, serif" }}
         >
           View Profile
@@ -206,7 +206,7 @@ const EmployeeCard = ({
                 <button
                   onClick={() => onApprove(emp)}
                   disabled={loading}
-                  className="text-xs px-3 py-1.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
+                  className="text-xs px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   Approve
@@ -214,7 +214,7 @@ const EmployeeCard = ({
                 <button
                   onClick={() => onReject(emp)}
                   disabled={loading}
-                  className="text-xs px-3 py-1.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
+                  className="text-xs px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   Reject
@@ -228,7 +228,7 @@ const EmployeeCard = ({
                 <button
                   onClick={() => onPromote(emp)}
                   disabled={loading}
-                  className="text-xs px-3 py-1.5 rounded-full bg-[#c2410c] text-white hover:bg-[#9a3009] transition-colors disabled:opacity-50"
+                  className="text-xs px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-full bg-[#c2410c] text-white hover:bg-[#9a3009] transition-colors disabled:opacity-50"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   Make Co-Admin
@@ -236,7 +236,7 @@ const EmployeeCard = ({
                 <button
                   onClick={() => onDeactivate(emp)}
                   disabled={loading}
-                  className="text-xs px-3 py-1.5 rounded-full border border-gray-400 text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  className="text-xs px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-full border border-gray-400 text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-50"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   Deactivate
@@ -250,7 +250,7 @@ const EmployeeCard = ({
                 <button
                   onClick={() => onDemote(emp)}
                   disabled={loading}
-                  className="text-xs px-3 py-1.5 rounded-full border border-[#c2410c] text-[#c2410c] hover:bg-[#f5e8c7] transition-colors disabled:opacity-50"
+                  className="text-xs px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-full border border-[#c2410c] text-[#c2410c] hover:bg-[#f5e8c7] transition-colors disabled:opacity-50"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   Demote to Employee
@@ -258,7 +258,7 @@ const EmployeeCard = ({
                 <button
                   onClick={() => onDeactivate(emp)}
                   disabled={loading}
-                  className="text-xs px-3 py-1.5 rounded-full border border-gray-400 text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  className="text-xs px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-full border border-gray-400 text-gray-500 hover:bg-gray-100 transition-colors disabled:opacity-50"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   Deactivate
@@ -271,7 +271,7 @@ const EmployeeCard = ({
               <button
                 onClick={() => onApprove(emp)}
                 disabled={loading}
-                className="text-xs px-3 py-1.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
+                className="text-xs px-4 py-2.5 sm:px-3 sm:py-1.5 rounded-full bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50"
                 style={{ fontFamily: "Georgia, serif" }}
               >
                 Reactivate
@@ -430,7 +430,7 @@ const Members = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 flex-wrap">
         <button
           onClick={() => setTab("all")}
           className={`px-5 py-2 rounded-full text-sm border-2 transition-colors ${
