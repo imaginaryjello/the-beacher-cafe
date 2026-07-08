@@ -28,7 +28,7 @@ const MenuRow = ({ item }) => (
         <p className="text-xs text-gray-500 mt-0.5">{item.description}</p>
       )}
     </div>
-    <span className="font-bold text-[#3f2a1d] flex-shrink-0">
+    <span className="font-bold text-[#3f2a1d] shrink-0">
       ${Number(item.price).toFixed(2)}
     </span>
   </div>
@@ -41,7 +41,7 @@ const MenuSection = ({ title, items, loading, fallbackContent }) => {
   if (!loading && items.length === 0 && !fallbackContent) return null;
 
   return (
-    <div className="bg-white border border-[#e8d9b8] rounded-3xl p-8 shadow">
+    <div className="bg-white border border-[#e8d9b8] rounded-3xl p-5 sm:p-8 shadow">
       <h3 className="text-2xl font-bold mb-6 text-[#c2410c]">{title}</h3>
       {loading ? (
         <div className="space-y-4">
@@ -97,20 +97,20 @@ const Menu = () => {
       <Navbar />
       <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d] pt-24">
         {/* ── HERO HEADER ── */}
-        <div className="bg-[#3f2a1d] text-[#f5e8c7] py-14 text-center relative">
+        <div className="bg-[#3f2a1d] text-[#f5e8c7] py-10 md:py-14 px-4 text-center relative">
           <div className="absolute inset-0 bg-[radial-gradient(#f5e8c7_0.8px,transparent_0.8px)] bg-size-[12px_12px] opacity-10" />
-          <h1 className="text-6xl md:text-7xl font-black tracking-[4px] leading-none">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-[2px] sm:tracking-[4px] leading-none">
             THE BEACHER CAFÉ
           </h1>
-          <p className="mt-3 text-2xl tracking-widest opacity-90">
+          <p className="mt-3 text-base sm:text-xl md:text-2xl tracking-widest opacity-90">
             EST. 1986 • TORONTO'S NEIGHBOURHOOD CAFÉ
           </p>
-          <div className="absolute bottom-6 right-8 bg-[#c2410c] text-[#f5e8c7] text-xs font-bold px-6 py-1 rounded-full rotate-[-8deg] shadow-md">
+          <div className="relative inline-block mt-5 md:mt-0 md:absolute md:bottom-6 md:right-8 bg-[#c2410c] text-[#f5e8c7] text-xs font-bold px-6 py-1 rounded-full rotate-[-8deg] shadow-md">
             FAMOUS HOLLANDAISE SINCE 1986
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-6 py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
           {/* ── ERROR STATE ── */}
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mb-8 text-center">
@@ -120,11 +120,11 @@ const Menu = () => {
 
           {/* ── CHALKBOARD SPECIALS ── */}
           <section className="mb-16">
-            <div className="bg-[#1c1c1c] text-[#f5e8c7] p-10 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div className="bg-[#1c1c1c] text-[#f5e8c7] p-6 sm:p-10 rounded-3xl shadow-2xl relative overflow-hidden">
               <div className="absolute top-4 left-4 text-[#c2410c] text-5xl opacity-20 font-black">
                 SPECIALS
               </div>
-              <h2 className="text-4xl font-bold text-center mb-10 tracking-widest">
+              <h2 className="text-2xl sm:text-4xl font-bold text-center mb-8 sm:mb-10 tracking-widest">
                 BEACHER SPECIALS
               </h2>
 
@@ -204,7 +204,7 @@ const Menu = () => {
 
           {/* ── ALL DAY BREAKFAST ── */}
           <section className="mb-20">
-            <h2 className="text-4xl font-bold text-center mb-10 text-[#3f2a1d] border-b-4 border-[#c2410c] pb-3 inline-block">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-[#3f2a1d] border-b-4 border-[#c2410c] pb-3 inline-block">
               ALL DAY BREAKFAST
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
@@ -215,15 +215,17 @@ const Menu = () => {
                   alt="Eggs Benjamyn"
                   className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
                 />
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start gap-3">
                   <div>
-                    <h3 className="font-bold text-2xl">EGGS BENJAMYN</h3>
+                    <h3 className="font-bold text-xl sm:text-2xl">
+                      EGGS BENJAMYN
+                    </h3>
                     <p className="text-sm text-gray-600 mt-1">
                       Smoked salmon, English muffin, famous Hollandaise, red
                       onion
                     </p>
                   </div>
-                  <span className="font-black text-3xl text-[#c2410c]">
+                  <span className="font-black text-2xl sm:text-3xl text-[#c2410c] shrink-0">
                     $21
                   </span>
                 </div>
@@ -234,23 +236,23 @@ const Menu = () => {
                   alt="Steak & Eggs"
                   className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
                 />
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start gap-3">
                   <div>
-                    <h3 className="font-bold text-2xl">
+                    <h3 className="font-bold text-xl sm:text-2xl">
                       NEW YORK STEAK & EGGS
                     </h3>
                     <p className="text-sm text-gray-600 mt-1">
                       Charbroiled striploin + two extra large eggs
                     </p>
                   </div>
-                  <span className="font-black text-3xl text-[#c2410c]">
+                  <span className="font-black text-2xl sm:text-3xl text-[#c2410c] shrink-0">
                     $26
                   </span>
                 </div>
               </div>
 
               {/* Dynamic breakfast items from DB */}
-              <div className="bg-white border border-[#e8d9b8] rounded-3xl p-8 shadow-md col-span-1 md:col-span-2">
+              <div className="bg-white border border-[#e8d9b8] rounded-3xl p-5 sm:p-8 shadow-md col-span-1 md:col-span-2">
                 {loading ? (
                   <div className="grid md:grid-cols-2 gap-4">
                     {[1, 2, 3, 4].map((i) => (
@@ -272,7 +274,7 @@ const Menu = () => {
                             </p>
                           )}
                         </div>
-                        <span className="font-bold ml-4 flex-shrink-0">
+                        <span className="font-bold ml-4 shrink-0">
                           ${Number(item.price).toFixed(2)}
                         </span>
                       </div>
@@ -306,7 +308,7 @@ const Menu = () => {
 
           {/* ── SALADS + BURGERS ── */}
           <section className="mb-20">
-            <h2 className="text-4xl font-bold text-center mb-12 text-[#3f2a1d]">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-[#3f2a1d]">
               HEALTHY BOUNTIFUL SALADS & BURGERS
             </h2>
             <div className="grid md:grid-cols-2 gap-12">
@@ -358,8 +360,8 @@ const Menu = () => {
             </div>
           </section>
           {/* Desserts */}
-          <section className="bg-white border border-[#e8d9b8] rounded-3xl p-10 shadow mb-12">
-            <h2 className="text-4xl font-bold text-center mb-10">
+          <section className="bg-white border border-[#e8d9b8] rounded-3xl p-6 sm:p-10 shadow mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10">
               DECADENT DESSERTS
             </h2>
             {loading ? (
@@ -406,8 +408,8 @@ const Menu = () => {
             )}
           </section>
           {/* ── BEVERAGES ── */}
-          <section className="bg-white border border-[#e8d9b8] rounded-3xl p-10 shadow mb-12">
-            <h2 className="text-4xl font-bold text-center mb-10">
+          <section className="bg-white border border-[#e8d9b8] rounded-3xl p-6 sm:p-10 shadow mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10">
               BEVERAGES & SMOOTHIES
             </h2>
             {loading ? (
@@ -458,7 +460,7 @@ const Menu = () => {
           <div className="text-center mt-8">
             <a
               href="/"
-              className="inline-block bg-[#c2410c] hover:bg-[#9a3410] text-white px-14 py-6 rounded-full text-xl font-bold tracking-wider transition-all"
+              className="inline-block bg-[#c2410c] hover:bg-[#9a3410] text-white px-8 py-4 text-base sm:px-14 sm:py-6 sm:text-xl rounded-full font-bold tracking-wider transition-all"
             >
               ← Back to the Beach
             </a>
