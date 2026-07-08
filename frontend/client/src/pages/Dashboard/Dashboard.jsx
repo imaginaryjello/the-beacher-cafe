@@ -53,7 +53,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-[#f5e8c7] flex">
       {/* ====================== SIDEBAR ====================== */}
       <div
-        className={`fixed md:static inset-y-0 left-0 z-50 w-72 bg-white border-r border-[#3f2a1d] shadow-xl transition-transform duration-300 
+        className={`fixed md:static inset-y-0 left-0 z-50 w-72 bg-white border-r border-[#3f2a1d] shadow-xl transition-transform duration-300 flex flex-col
         ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         {/* Logo */}
@@ -75,8 +75,8 @@ const Dashboard = () => {
           </span>
         </div>
 
-        {/* Nav */}
-        <nav className="p-4">
+        {/* Nav — scrolls internally so the user info below never overlaps links */}
+        <nav className="p-4 flex-1 overflow-y-auto">
           <ul className="space-y-1">
             {navLinks.map((link) => (
               <li key={link.to}>
@@ -106,7 +106,7 @@ const Dashboard = () => {
         </nav>
 
         {/* Bottom: user info */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#3f2a1d]/20">
+        <div className="p-4 border-t border-[#3f2a1d]/20">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-[#3f2a1d] flex items-center justify-center shrink-0">
               <span className="text-[#f5e8c7] font-bold text-sm">
@@ -129,16 +129,16 @@ const Dashboard = () => {
       {/* ====================== MAIN CONTENT ====================== */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <div className="bg-white border-b border-[#3f2a1d] px-6 py-4 flex items-center justify-between shadow-sm sticky top-0 z-40">
-          <div className="flex items-center gap-4">
+        <div className="bg-white border-b border-[#3f2a1d] px-4 sm:px-6 py-4 flex items-center justify-between gap-3 shadow-sm sticky top-0 z-40">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-2xl text-[#3f2a1d]"
+              className="md:hidden text-2xl text-[#3f2a1d] p-2 -m-1"
             >
               ☰
             </button>
             <h2
-              className="text-xl font-semibold text-[#3f2a1d]"
+              className="text-xl font-semibold text-[#3f2a1d] truncate"
               style={{ fontFamily: "Georgia, serif" }}
             >
               {/* Dynamic page title based on route */}
@@ -154,7 +154,7 @@ const Dashboard = () => {
             </h2>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             {/* Notification bell — owner only */}
             {<NotificationBell />}
 
@@ -176,7 +176,7 @@ const Dashboard = () => {
         </div>
 
         {/* Page Content */}
-        <div className="flex-1 p-6 md:p-10">
+        <div className="flex-1 p-4 sm:p-6 md:p-10">
           <Outlet />
         </div>
       </div>
