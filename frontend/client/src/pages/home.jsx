@@ -88,28 +88,28 @@ function Home() {
           />
 
           {/* Warm vintage overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b  via-transparent " />
+          <div className="absolute inset-0 bg-linear-to-b via-transparent" />
         </div>
         <Navbar />
 
         {/* Content */}
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto text-white">
-          <h1 className="text-6xl md:text-7xl font-bold font-serif tracking-tight mb-6 drop-shadow-lg">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold font-serif tracking-tight mb-6 drop-shadow-lg">
             The Beacher Café
           </h1>
-          <p className="text-2xl md:text-3xl mb-10 max-w-2xl mx-auto font-medium">
+          <p className="text-lg sm:text-2xl md:text-3xl mb-10 max-w-2xl mx-auto font-medium">
             Est. 1986 • Where the beach meets your favourite neighbourhood café
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
             <a
               href="/menu"
-              className="inline-flex items-center justify-center px-10 py-5 text-xl font-bold bg-[#c2410c] hover:bg-[#9a3410] text-white rounded-full transition-all shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg sm:px-10 sm:py-5 sm:text-xl font-bold bg-[#c2410c] hover:bg-[#9a3410] text-white rounded-full transition-all shadow-lg"
             >
               View Our Menu
             </a>
             <a
               href="/reservations"
-              className="inline-flex items-center justify-center px-10 py-5 text-xl font-bold border-4 border-[#3f2a1d] hover:bg-[#3f2a1d] hover:text-white text-white rounded-full transition-all"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg sm:px-10 sm:py-5 sm:text-xl font-bold border-4 border-[#3f2a1d] hover:bg-[#3f2a1d] hover:text-white text-white rounded-full transition-all"
             >
               Reserve Your Table
             </a>
@@ -135,7 +135,7 @@ function Home() {
       </section>
       {/* //home about section with years of service, awards,   */}
       <section className="mt-20 text-center px-6">
-        <h2 className="text-5xl md:text-7xl  font-bold mb-8">
+        <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-8">
           Legacy of Excellence
         </h2>
         <p className="text-lg md:text-xl max-w-3xl mx-auto mb-6">
@@ -186,12 +186,12 @@ function Home() {
       └────────────┴────────────┴────────────┴────────────┘
       "See all specials" → link to full menu */}
 
-        <div className="mt-20 text-center">
+        <div className="mt-20 px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">
             Today's Specials
           </h2>
-          <div className="grid grid- mb-10 ">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
               {/* WHY fallback: if no active specials exist in the DB yet, we show
                 static cards so the home page never looks empty to visitors */}
               {(specials.length > 0 ? specials : FALLBACK_SPECIALS).map((s) => (
@@ -285,19 +285,19 @@ function Home() {
           </div>
 
           {/* Map + Image grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 h-72 md:h-80">
+          <div className="grid grid-cols-1 md:grid-cols-2 md:h-80">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5771.703299680468!2d-79.29386818795331!3d43.67205505109023!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d4cc01cf24ceb1%3A0xd704ead51601df4e!2sThe%20Beacher%20Cafe!5e0!3m2!1sen!2sca!4v1772767249134!5m2!1sen!2sca"
-              className="w-full h-full border-0"
+              className="w-full h-64 md:h-full border-0"
               allowFullScreen
               loading="lazy"
               title="Our location on Google Maps"
             />
-            <div className="relative overflow-hidden group">
+            <div className="relative overflow-hidden group h-56 md:h-auto">
               <img
                 src="/image copy 5.png"
                 alt="Our cafe"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 bg-gradient-to-l  via-transparent color-[#f5e8c7]"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 bg-linear-to-l via-transparent"
               />
               {/* subtle dark overlay on hover */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
