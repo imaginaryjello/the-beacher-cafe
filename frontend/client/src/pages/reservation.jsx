@@ -85,8 +85,8 @@ export default function Reservations() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-[#f5e8c7] pt-28 px-6">
-          <div className="max-w-xl mx-auto bg-white border-4 border-[#3f2a1d] rounded-2xl p-10 shadow-lg text-center">
+        <div className="min-h-screen bg-[#f5e8c7] pt-28 px-4 sm:px-6 pb-16">
+          <div className="max-w-xl mx-auto bg-white border-4 border-[#3f2a1d] rounded-2xl p-6 sm:p-10 shadow-lg text-center">
             <div className="text-5xl mb-4">🎉</div>
             <h1
               className="text-3xl font-bold text-[#3f2a1d] mb-3"
@@ -125,8 +125,8 @@ export default function Reservations() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-[#f5e8c7] pt-28 px-6">
-        <div className="max-w-xl mx-auto bg-white border-4 border-[#3f2a1d] rounded-2xl p-8 shadow-lg">
+      <div className="min-h-screen bg-[#f5e8c7] pt-28 px-4 sm:px-6 pb-16">
+        <div className="max-w-xl mx-auto bg-white border-4 border-[#3f2a1d] rounded-2xl p-5 sm:p-8 shadow-lg">
           <h1
             className="text-3xl font-bold text-center mb-2 text-[#3f2a1d]"
             style={{ fontFamily: "Georgia, serif" }}
@@ -222,7 +222,7 @@ export default function Reservations() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-[#6b5a47] mb-1">
                   Date
