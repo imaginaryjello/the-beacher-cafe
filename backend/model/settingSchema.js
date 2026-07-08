@@ -37,6 +37,17 @@ const settingsSchema = new mongoose.Schema(
     // ── ANNOUNCEMENT ──
     announcement: { type: String, default: "" },
     announcementActive: { type: Boolean, default: false },
+
+    // ── BLOCKED DATES ──
+    // Specific calendar dates where reservations are turned off entirely.
+    // Managed via /api/settings/blocked-dates (admin or co-admin).
+    blockedDates: [
+      {
+        _id: false,                              // embedded, no separate id needed
+        date: { type: String, required: true },  // "YYYY-MM-DD"
+        reason: { type: String, default: "" },   // optional note shown to customers
+      },
+    ],
   },
   { timestamps: true },
 );
