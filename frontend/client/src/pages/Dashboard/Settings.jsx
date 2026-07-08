@@ -169,19 +169,19 @@ const BlockedDatesSection = ({ blockedDates, setBlockedDates, token }) => {
           min={today}
           value={newDate}
           onChange={(e) => setNewDate(e.target.value)}
-          className={inputCls}
+          className={`${inputCls} w-full sm:w-auto`}
         />
         <input
           type="text"
           placeholder="Reason (optional, shown to customers)"
           value={newReason}
           onChange={(e) => setNewReason(e.target.value)}
-          className={`${inputCls} flex-1 min-w-0`}
+          className={`${inputCls} w-full sm:flex-1 sm:min-w-0`}
         />
         <button
           onClick={addDate}
           disabled={adding}
-          className="bg-[#3f2a1d] hover:bg-[#5a3e2b] text-[#f5e8c7] px-4 py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 shrink-0"
+          className="bg-[#3f2a1d] hover:bg-[#5a3e2b] text-[#f5e8c7] px-4 py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 w-full sm:w-auto shrink-0"
         >
           {adding ? "Blocking..." : "Block Date"}
         </button>
@@ -450,9 +450,9 @@ const Settings = () => {
                 return (
                   <div
                     key={d.key}
-                    className="flex items-center gap-3 py-2 border-b border-[#3f2a1d]/5 last:border-0"
+                    className="flex flex-wrap items-center gap-x-3 gap-y-2 py-2 border-b border-[#3f2a1d]/5 last:border-0"
                   >
-                    <span className="w-24 text-sm text-[#3f2a1d] shrink-0">
+                    <span className="w-20 sm:w-24 text-sm text-[#3f2a1d] shrink-0">
                       {d.label}
                     </span>
                     {day.closed ? (
@@ -460,7 +460,10 @@ const Settings = () => {
                         Closed
                       </span>
                     ) : (
-                      <div className="flex items-center gap-2 flex-1">
+                      // WHY order-last at base: day + checkbox share line one,
+                      // the two time pickers get a full-width line two. From
+                      // sm+ everything returns to a single row like before.
+                      <div className="flex items-center gap-2 order-last w-full sm:order-0 sm:w-auto sm:flex-1">
                         <input
                           type="time"
                           className={input + " w-auto!"}
@@ -480,7 +483,7 @@ const Settings = () => {
                         />
                       </div>
                     )}
-                    <label className="flex items-center gap-1.5 cursor-pointer shrink-0">
+                    <label className="flex items-center gap-1.5 cursor-pointer shrink-0 ml-auto sm:ml-0">
                       <input
                         type="checkbox"
                         checked={day.closed}
@@ -605,7 +608,7 @@ const Settings = () => {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="mt-6 bg-[#3f2a1d] hover:bg-[#5a3e2b] text-[#f5e8c7] px-8 py-3 rounded-full font-medium transition-colors disabled:opacity-50"
+          className="mt-6 w-full sm:w-auto bg-[#3f2a1d] hover:bg-[#5a3e2b] text-[#f5e8c7] px-8 py-3 rounded-full font-medium transition-colors disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save Settings"}
         </button>

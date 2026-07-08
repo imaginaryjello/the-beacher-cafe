@@ -153,9 +153,12 @@ const NotificationBell = () => {
         )}
       </button>
 
-      {/* ── DROPDOWN ── */}
+      {/* ── DROPDOWN ──
+          WHY fixed at base: a 320px panel anchored to the bell clips past the
+          left edge of a 375px screen; on phones it pins to the viewport with
+          16px gutters instead, and returns to bell-anchored from sm+ */}
       {open && (
-        <div className="absolute right-0 top-12 w-80 bg-white border border-[#3f2a1d]/20 rounded-xl shadow-2xl z-50 overflow-hidden">
+        <div className="fixed inset-x-4 top-20 w-auto sm:absolute sm:inset-x-auto sm:right-0 sm:top-12 sm:w-80 bg-white border border-[#3f2a1d]/20 rounded-xl shadow-2xl z-50 overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#3f2a1d]/10">
             <h3
@@ -186,7 +189,7 @@ const NotificationBell = () => {
               <div className="p-4 space-y-3">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="animate-pulse flex gap-3">
-                    <div className="w-8 h-8 bg-[#f5e8c7] rounded-full flex-shrink-0" />
+                    <div className="w-8 h-8 bg-[#f5e8c7] rounded-full shrink-0" />
                     <div className="flex-1 space-y-1.5">
                       <div className="h-3 bg-[#f5e8c7] rounded w-3/4" />
                       <div className="h-3 bg-[#f5e8c7] rounded w-1/2" />
@@ -216,7 +219,7 @@ const NotificationBell = () => {
                     }`}
                   >
                     {/* Icon */}
-                    <div className="w-8 h-8 rounded-full bg-[#f5e8c7] flex items-center justify-center flex-shrink-0 text-base">
+                    <div className="w-8 h-8 rounded-full bg-[#f5e8c7] flex items-center justify-center shrink-0 text-base">
                       {config.icon}
                     </div>
 
@@ -230,7 +233,7 @@ const NotificationBell = () => {
                           {config.label}
                         </span>
                         {!n.read && (
-                          <span className="w-1.5 h-1.5 bg-[#c2410c] rounded-full flex-shrink-0" />
+                          <span className="w-1.5 h-1.5 bg-[#c2410c] rounded-full shrink-0" />
                         )}
                       </div>
                       <p

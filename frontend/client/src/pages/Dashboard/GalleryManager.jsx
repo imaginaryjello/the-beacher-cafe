@@ -317,16 +317,19 @@ const GalleryTab = ({ token }) => {
                 alt={img.caption || "Gallery image"}
                 className="w-full h-full object-cover"
               />
-              {/* Hover overlay with caption + delete */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200 flex flex-col justify-between p-2">
+              {/* Overlay with caption + delete.
+                  WHY visible at base: phones have no hover, so an opacity-0
+                  button would be an invisible tap target. Hover-reveal only
+                  kicks in from md+ where a cursor exists. */}
+              <div className="absolute inset-0 bg-black/0 md:group-hover:bg-black/50 transition-colors duration-200 flex flex-col justify-between p-2">
                 {img.caption && (
-                  <p className="text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded px-1.5 py-0.5 self-start">
+                  <p className="text-white text-xs opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-black/40 rounded px-1.5 py-0.5 self-start">
                     {img.caption}
                   </p>
                 )}
                 <button
                   onClick={() => setDeletingId(img._id)}
-                  className="self-end opacity-0 group-hover:opacity-100 transition-opacity bg-red-600 text-white text-xs px-2 py-1 rounded-lg"
+                  className="self-end opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-red-600 text-white text-xs px-3 py-2 md:px-2 md:py-1 rounded-lg"
                 >
                   Delete
                 </button>
