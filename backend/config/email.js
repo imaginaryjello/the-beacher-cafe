@@ -84,6 +84,41 @@ export const sendReservationConfirmed = async (
 };
 
 // ─────────────────────────────────────────
+// Password reset
+// ─────────────────────────────────────────
+export const sendPasswordResetEmail = async (to, { name, resetUrl }) => {
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: "Reset your password — The Beacher Café",
+      html: `
+        <div style="font-family: Georgia, serif; max-width: 480px; margin: auto; color: #3f2a1d;">
+          <div style="background:#3f2a1d; padding:24px; text-align:center;">
+            <h1 style="color:#f5e8c7; margin:0; font-size:24px;">The Beacher Café</h1>
+            <p style="color:#c2410c; margin:4px 0 0; font-size:12px; letter-spacing:2px;">EST. 1986</p>
+          </div>
+          <div style="padding:24px; background:#f5e8c7;">
+            <p>Hi ${name},</p>
+            <p>We received a request to reset your dashboard password. Click the button below to set a new one.</p>
+            <div style="text-align:center; margin:24px 0;">
+              <a href="${resetUrl}"
+                style="background:#c2410c; color:#fff; padding:12px 28px; border-radius:24px;
+                       text-decoration:none; font-weight:bold; font-size:15px;">
+                Reset Password
+              </a>
+            </div>
+            <p style="font-size:13px; color:#6b5a47;">This link expires in <strong>1 hour</strong>. If you didn't request a reset, you can safely ignore this email — your password won't change.</p>
+            <p style="margin-top:24px;">— The Beacher Café</p>
+          </div>
+        </div>`,
+    });
+  } catch (err) {
+    console.error("[Email] password reset failed:", err.message);
+  }
+};
+
+// ─────────────────────────────────────────
 // Reservation declined
 // ─────────────────────────────────────────
 export const sendReservationDeclined = async (to, { name, date, time }) => {

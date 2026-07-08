@@ -8,7 +8,7 @@ import { AuthContext } from "./context/AuthContext"; // We'll create this soon
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext); // Get login function from context
-
+  const VITE_API_URL = import.meta.env.VITE_API_URL; // Get the API URL from environment variables
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,10 +27,7 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/login",
-        formData,
-      );
+      const response = await axios.post(`${VITE_API_URL}/api/login`, formData);
 
       if (response.data.success) {
         login(response.data); // Save user + token in context
@@ -106,6 +103,14 @@ export default function Login() {
           </form>
 
           <div className="text-center mt-8">
+            <p className="text-[#6b5a47]">
+              <Link
+                to="/forgot-password"
+                className="text-[#c2410c] font-medium hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            </p>
             <p className="text-[#6b5a47]">
               Don't have an account?{" "}
               <Link

@@ -7,12 +7,13 @@ import Footer from "./footer";
 
 export default function Register() {
   const navigate = useNavigate();
+  const VITE_API_URL = import.meta.env.VITE_API_URL;
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    password: ""
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,7 @@ export default function Register() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/register",
+        `${VITE_API_URL}/api/register`,
         formData,
       );
 
@@ -105,8 +106,6 @@ export default function Register() {
               required
               className="w-full p-4 border-2 border-[#c2410c] rounded-xl focus:outline-none focus:border-[#9a3410] text-lg"
             />
-
-
 
             <button
               type="submit"

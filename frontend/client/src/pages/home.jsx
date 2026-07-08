@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SpecialCards from "../components/SpecialCards";
 import ImageGrid from "../components/imagegridhome";
 import Navbar from "./navbar";
@@ -13,9 +13,69 @@ import AnnouncementBanner from "../components/AnnouncementBanner";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+// WHY fallbacks for both sections: the home page should never look empty to a
+// visitor, even before the owner has uploaded anything to the dashboard.
+const FALLBACK_GALLERY = [
+  { _id: "g1", imageUrl: "/benamyn.png", caption: "" },
+  { _id: "g2", imageUrl: "/brieburger.png", caption: "" },
+  { _id: "g3", imageUrl: "/steakegg.png", caption: "" },
+  { _id: "g4", imageUrl: "/somkedsalmon.png", caption: "" },
+  { _id: "g5", imageUrl: "/image copy 11.png", caption: "" },
+  { _id: "g6", imageUrl: "/turkey.jpg", caption: "" },
+  { _id: "g7", imageUrl: "/image copy 12.png", caption: "" },
+];
+
+const FALLBACK_SPECIALS = [
+  {
+    _id: "f1",
+    imageUrl: "/turkey.jpg",
+    title: "Turkey Avocado Sandwich",
+    price: 12.99,
+  },
+  { _id: "f2", imageUrl: "/steakegg.png", title: "Steak & Eggs", price: 29.99 },
+  {
+    _id: "f3",
+    imageUrl: "/image copy 12.png",
+    title: "Cajun Chicken Caesar Salad",
+    price: 14.99,
+  },
+  {
+    _id: "f4",
+    imageUrl: "/somkedsalmon.png",
+    title: "Smoked Salmon Bagel",
+    price: 11.99,
+  },
+];
+
 function Home() {
   const { settings } = useSettings();
   const hoursGroups = settings ? formatHoursDisplay(settings.hours) : [];
+
+  // Fetch active specials from the backend
+  const [specials, setSpecials] = useState([]);
+  useEffect(() => {
+    fetch(`${API}/api/specials`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          // Only show active specials on the public home page
+          const active = data.specials.filter((s) => s.active);
+          setSpecials(active);
+        }
+      })
+      .catch(() => {}); // silently fall back to static cards if API is down
+  }, []);
+
+  // Fetch gallery images from the backend
+  const [galleryImages, setGalleryImages] = useState([]);
+  useEffect(() => {
+    fetch(`${API}/api/gallery`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setGalleryImages(data.images);
+      })
+      .catch(() => {}); // silently fall back to static images if API is down
+  }, []);
   return (
     <>
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden ">
@@ -130,32 +190,23 @@ function Home() {
           <h2 className="text-3xl md:text-4xl font-bold mb-8">
             Today's Specials
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-6">
-            {/* Example card */}
-            <SpecialCards
-              image="/turkey.jpg"
-              title="Turkey Avocado Sandwich"
-              price="$12.99"
-            />
-            <SpecialCards
-              image="/steakegg.png"
-              title="Steak & Eggs"
-              price="$29.99"
-            />
-            <SpecialCards
-              image="/image copy 12.png"
-              title="Cajun Chicken Ceasar Salad"
-              price="$14.99"
-            />
-            <SpecialCards
-              image="/somkedsalmon.png"
-              title="Smoked Salmon Bagel"
-              price="$11.99"
-            />
+          <div className="grid grid- mb-10 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {/* WHY fallback: if no active specials exist in the DB yet, we show
+                static cards so the home page never looks empty to visitors */}
+              {(specials.length > 0 ? specials : FALLBACK_SPECIALS).map((s) => (
+                <SpecialCards
+                  key={s._id}
+                  image={s.imageUrl}
+                  title={s.title}
+                  price={`$${Number(s.price).toFixed(2)}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
-      <section className="mt-20 px-6 text-center">
+      <section className="mt-10 px-6 text-center">
         <h2 className="text-3xl font-bold mb-6">Ready to Join Us?</h2>
         <a
           href="/reservations"
@@ -165,30 +216,30 @@ function Home() {
         </a>
       </section>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 sm:grid-cols-2 gap-2 mt-30 px-6">
-        <div className="grid gap-4">
-          <ImageGrid src="/benamyn.png" alt="Benjamyn" />
-          <ImageGrid src="/brieburger.png" alt="Image" />
-          <ImageGrid src="/steakegg.png" alt="Steak Egg" />
-        </div>
-        <div className="grid gap-4">
-          <ImageGrid src="/somkedsalmon.png" alt="Smoked Salmon" />
-          <ImageGrid src="/image copy 11.png" alt="Image" />
-          <ImageGrid src="/turkey.jpg" alt="Turkey" />
-          <ImageGrid src="/image copy 12.png" alt="Image" />
-        </div>
-        <div className="grid gap-4">
-          <ImageGrid src="/benamyn.png" alt="Benjamyn" />
-          <ImageGrid src="/brieburger.png" alt="Image" />
-          <ImageGrid src="/steakegg.png" alt="Steak Egg" />
-        </div>
-        <div className="grid gap-4">
-          <ImageGrid src="/somkedsalmon.png" alt="Smoked Salmon" />
-          <ImageGrid src="/image copy 12.png" alt="Image" />
-          <ImageGrid src="/turkey.jpg" alt="Turkey" />
-          <ImageGrid src="/image copy 11.png" alt="Image" />
-        </div>
-      </div>
+      {/* WHY 4 column divs instead of a flat grid: this gives the masonry-style
+          staggered look where each column can have different image heights.
+          We distribute images round-robin across 4 columns (index % 4). */}
+      {(() => {
+        const imgs =
+          galleryImages.length > 0 ? galleryImages : FALLBACK_GALLERY;
+        const cols = [[], [], [], []];
+        imgs.forEach((img, i) => cols[i % 4].push(img));
+        return (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-20 px-6">
+            {cols.map((col, ci) => (
+              <div key={ci} className="grid gap-2">
+                {col.map((img) => (
+                  <ImageGrid
+                    key={img._id}
+                    src={img.imageUrl}
+                    alt={img.caption || "Gallery image"}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Visit Us */}
       <section className="w-full max-w-4xl mx-auto mt-20 px-4">

@@ -27,7 +27,9 @@ export const verifyToken = (req, res, next) => {
   try {
     // WHY: jwt.verify() both decodes AND checks the signature + expiry.
     // If the token is tampered with or expired, it throws an error.
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+      algorithms: ["HS256"],
+    });
     req.user = decoded; // { id, role, status, email, iat, exp }
     next(); // move on to the actual route handler
   } catch (error) {

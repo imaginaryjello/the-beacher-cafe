@@ -12,6 +12,7 @@ const Dashboard = () => {
 
   const isActive = (path) => location.pathname === path;
   const isOwner = user?.role === "admin";
+  const isCoAdmin = user?.role === "coadmin";
 
   const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -42,9 +43,10 @@ const Dashboard = () => {
     { to: "/dashboard/specials", label: "Specials Editor", icon: "⭐" },
     { to: "/dashboard/gallery", label: "Gallery Manager", icon: "🖼️" },
     { to: "/dashboard/reservations", label: "Reservations", icon: "📅" },
-    ...(isOwner
+    ...(isOwner || isCoAdmin
       ? [{ to: "/dashboard/settings", label: "Settings", icon: "⚙️" }]
       : []),
+    { to: "/dashboard/profile", label: "My Profile", icon: "👤" },
   ];
 
   return (
@@ -106,7 +108,7 @@ const Dashboard = () => {
         {/* Bottom: user info */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#3f2a1d]/20">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-[#3f2a1d] flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-full bg-[#3f2a1d] flex items-center justify-center shrink-0">
               <span className="text-[#f5e8c7] font-bold text-sm">
                 {user?.name?.charAt(0).toUpperCase()}
               </span>
@@ -148,6 +150,7 @@ const Dashboard = () => {
               {location.pathname === "/dashboard/reservations" &&
                 "Reservations"}
               {location.pathname === "/dashboard/settings" && "Settings"}
+              {location.pathname === "/dashboard/profile" && "Profile"}
             </h2>
           </div>
 

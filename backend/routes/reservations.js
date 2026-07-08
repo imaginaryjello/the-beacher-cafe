@@ -116,6 +116,28 @@ router.post("/", reservationLimiter, async (req, res) => {
       });
     }
 
+    // ── BLOCKED DATE CHECK ──
+    // Admin/co-admin can mark specific dates unavailable via settings.
+    // Check before day-of-week so the message is specific, not "we're closed".
+    if (settings.blockedDates && settings.blockedDates.length > 0) {
+      const blocked = settings.blockedDates.find((b) => b.date === date);
+      if (blocked) {
+        // WHY T12:00:00: "YYYY-MM-DD" parsed at midnight local time can shift
+        // to the previous day in negative-UTC timezones. Noon is safe everywhere.
+        const fmtDate = new Date(`${date}T12:00:00`).toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+        const reasonPart = blocked.reason ? ` — ${blocked.reason}` : "";
+        return res.status(400).json({
+          success: false,
+          message: `Sorry, we're not accepting reservations on ${fmtDate}${reasonPart}. Please call us at ${settings.phone} for more information.`,
+        });
+      }
+    }
+
     // Look up THIS day's specific hours
     const dayKey = DAY_KEYS[bookingDate.getDay()];
     const dayHours = settings.hours[dayKey];

@@ -3,14 +3,27 @@ import express from "express";
 import bcrypt from "bcryptjs"; // ← ADD THIS
 import jwt from "jsonwebtoken"; // ← ADD THIS
 import Employee from "../model/employeeSchema.js";
+import crypto from "crypto"; // for token regeneration
 import Notification from "../model/notificationSchema.js";
 import { verifyToken, requireAdmin } from "../middleware/auth.js";
+import rateLimit from "express-rate-limit";
+import { sendPasswordResetEmail } from "../config/email.js"; // import the email function
 
 const fireNotification = (data) => {
   Notification.create(data).catch((err) =>
     console.error("[Notification] Failed to create:", err.message),
   );
 };
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message: {
+    success: false,
+    message:
+      "Too many requests from this IP, please try again after 15 minutes",
+  },
+});
 const router = express.Router();
 
 // ============================================
@@ -24,7 +37,7 @@ const router = express.Router();
 //   4. A Notification document is created for the owner
 //   5. NO JWT issued on register — employee waits for approval
 // ============================================
-router.post("/register", async (req, res) => {
+router.post("/register", authLimiter, async (req, res) => {
   try {
     const { name, email, phone, password } = req.body;
     // WHY: We destructure `role` out — we do NOT use it.
@@ -100,11 +113,11 @@ router.post("/register", async (req, res) => {
 //   3. Login is NOT blocked for pending users —
 //      the frontend reads the token and decides what to show
 // ============================================
-router.post("/login", async (req, res) => {
+router.post("/login", authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const employeeData = await Employee.findOne({ email });
+    const employeeData = await Employee.findOne({ email }).select("+password"); // WHY: we need the hashed password for comparison
 
     if (!employeeData) {
       return res.status(404).json({
@@ -172,7 +185,7 @@ router.post("/login", async (req, res) => {
 // WHAT CHANGES: Now protected by verifyToken + requireAccepted (implicit via verifyToken)
 // WHY: Before, any unauthenticated request could see all employee records.
 // ============================================
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     const employees = await Employee.find().select("-password");
 
@@ -415,6 +428,271 @@ router.patch("/deactivate/:id", verifyToken, requireAdmin, async (req, res) => {
       message: "Error deactivating employee",
       error: error.message,
     });
+  }
+});
+
+// ============================================
+// ============================================
+// GET OWN PROFILE
+// GET /api/user/profile
+// Protected: any accepted employee
+// WHY a separate /profile route instead of using GET /:id:
+//   - The user already has their own ID in the JWT token
+//   - No ID param needed — they can only read their own data
+//   - Cleaner API surface with no ID exposure required
+// ============================================
+router.get("/profile", verifyToken, async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.user.id).select(
+      "-password -resetPasswordToken -resetPasswordExpires",
+    );
+    if (!employee) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Profile not found" });
+    }
+    res.json({ success: true, employee });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching profile" });
+  }
+});
+
+// ============================================
+// UPDATE PROFILE DETAILS
+// PATCH /api/user/profile
+// Protected: any accepted employee
+// Body: { name, phone }
+// WHY PATCH not PUT: we only allow updating name and phone.
+//   Email changes are not allowed here — email is their identity
+//   and changing it would require re-verification (a separate feature).
+// ============================================
+router.patch("/profile", verifyToken, async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+
+    if (!name || !name.trim()) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Name is required" });
+    }
+
+    // WHY check phone uniqueness manually: Mongoose unique constraint throws a
+    // cryptic error, so we catch it ourselves and return a clear message
+    if (phone) {
+      const phoneInUse = await Employee.findOne({
+        phone,
+        _id: { $ne: req.user.id },
+      });
+      if (phoneInUse) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "That phone number is already in use",
+          });
+      }
+    }
+
+    const updated = await Employee.findByIdAndUpdate(
+      req.user.id,
+      { name: name.trim(), ...(phone && { phone: phone.trim() }) },
+      { new: true },
+    ).select("-password -resetPasswordToken -resetPasswordExpires");
+
+    if (!updated) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Employee not found" });
+    }
+
+    res.json({ success: true, employee: updated, message: "Profile updated" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error updating profile" });
+  }
+});
+
+// ============================================
+// CHANGE PASSWORD (logged in)
+// PATCH /api/user/change-password
+// Protected: any accepted employee
+// Body: { currentPassword, newPassword }
+// WHY require currentPassword: confirms it's the real user making the change,
+//   not someone who grabbed an unlocked screen or a stolen token
+// ============================================
+router.patch("/change-password", verifyToken, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Current and new password are required",
+        });
+    }
+
+    if (newPassword.length < 6) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "New password must be at least 6 characters",
+        });
+    }
+
+    // WHY select("+password"): password is select:false by default so it won't
+    // appear in normal queries. We opt-in here because we need it for comparison.
+    const employee = await Employee.findById(req.user.id).select("+password");
+    if (!employee) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Employee not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, employee.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Current password is incorrect" });
+    }
+
+    employee.password = await bcrypt.hash(newPassword, 10);
+    await employee.save();
+
+    res.json({ success: true, message: "Password changed successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error changing password" });
+  }
+});
+
+// ============================================
+// FORGOT PASSWORD
+// POST /api/user/forgot-password
+// Public (no auth) — rate limited
+// Body: { email }
+//
+// WHY we always return the same response regardless of whether the email exists:
+//   Returning a different message for "email found" vs "email not found" lets an
+//   attacker enumerate which emails are registered (account enumeration attack).
+//   We silently skip sending if the email isn't found.
+// ============================================
+router.post("/forgot-password", authLimiter, async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
+    }
+
+    const employee = await Employee.findOne({
+      email: email.toLowerCase().trim(),
+    });
+
+    // Always respond with the same message — don't reveal if email exists
+    const safeResponse = {
+      success: true,
+      message: "If that email is registered, a reset link has been sent.",
+    };
+
+    if (!employee) {
+      return res.json(safeResponse); // exit quietly, no email sent
+    }
+
+    // WHY raw token in email, hashed token in DB:
+    //   Raw = what we put in the reset URL (user sees this briefly)
+    //   Hashed = what we store (useless to an attacker who reads the DB)
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
+
+    employee.resetPasswordToken = hashedToken;
+    employee.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    await employee.save();
+
+    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${rawToken}`;
+
+    await sendPasswordResetEmail(employee.email, {
+      name: employee.name,
+      resetUrl,
+    });
+
+    res.json(safeResponse);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error sending reset email" });
+  }
+});
+
+// ============================================
+// RESET PASSWORD
+// POST /api/user/reset-password
+// Public (no auth) — rate limited
+// Body: { token, newPassword }
+//
+// WHY we hash the incoming token before querying:
+//   We stored the hashed version, so we hash the incoming token to compare —
+//   same principle as bcrypt but for the reset token.
+// ============================================
+router.post("/reset-password", authLimiter, async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Token and new password are required",
+        });
+    }
+
+    if (newPassword.length < 6) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Password must be at least 6 characters",
+        });
+    }
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    // WHY $gt: Date.now(): reject tokens that exist but are expired
+    const employee = await Employee.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() },
+    }).select("+password");
+
+    if (!employee) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Reset link is invalid or has expired. Please request a new one.",
+      });
+    }
+
+    employee.password = await bcrypt.hash(newPassword, 10);
+    // WHY clear the token after use: single-use link — can't be replayed
+    employee.resetPasswordToken = null;
+    employee.resetPasswordExpires = null;
+    await employee.save();
+
+    res.json({
+      success: true,
+      message: "Password reset successfully. You can now log in.",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error resetting password" });
   }
 });
 
