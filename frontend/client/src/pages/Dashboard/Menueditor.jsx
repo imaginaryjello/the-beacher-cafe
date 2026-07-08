@@ -236,7 +236,7 @@ const MenuItemRow = ({
   loading,
 }) => (
   <div
-    className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${
+    className={`flex flex-wrap items-center gap-3 p-4 rounded-xl border transition-all ${
       item.available
         ? "bg-white border-[#3f2a1d]/10"
         : "bg-gray-50 border-gray-200 opacity-60"
@@ -244,7 +244,7 @@ const MenuItemRow = ({
   >
     {/* Availability dot */}
     <div
-      className={`w-2 h-2 rounded-full flex-shrink-0 ${
+      className={`w-2 h-2 rounded-full shrink-0 ${
         item.available ? "bg-green-500" : "bg-gray-400"
       }`}
     />
@@ -277,40 +277,41 @@ const MenuItemRow = ({
       )}
     </div>
 
-    {/* Price */}
-    <span
-      className="text-base font-bold text-[#c2410c] flex-shrink-0"
-      style={{ fontFamily: "Georgia, serif" }}
-    >
-      ${Number(item.price).toFixed(2)}
-    </span>
+    {/* Price + actions: own full-width row on phones, inline from sm+ */}
+    <div className="flex items-center justify-between gap-3 w-full sm:w-auto">
+      <span
+        className="text-base font-bold text-[#c2410c] shrink-0"
+        style={{ fontFamily: "Georgia, serif" }}
+      >
+        ${Number(item.price).toFixed(2)}
+      </span>
 
-    {/* Actions */}
-    <div className="flex gap-1 flex-shrink-0">
-      <button
-        onClick={() => onToggleAvailable(item)}
-        disabled={loading}
-        title={item.available ? "Mark as unavailable" : "Mark as available"}
-        className="p-1.5 rounded-lg hover:bg-[#f5e8c7] transition-colors text-sm disabled:opacity-50"
-      >
-        {item.available ? "🟢" : "⭕"}
-      </button>
-      <button
-        onClick={() => onEdit(item)}
-        disabled={loading}
-        className="p-1.5 rounded-lg hover:bg-[#f5e8c7] transition-colors text-sm disabled:opacity-50"
-        title="Edit"
-      >
-        ✏️
-      </button>
-      <button
-        onClick={() => onDelete(item)}
-        disabled={loading}
-        className="p-1.5 rounded-lg hover:bg-red-50 transition-colors text-sm disabled:opacity-50"
-        title="Delete"
-      >
-        🗑️
-      </button>
+      <div className="flex gap-1 shrink-0">
+        <button
+          onClick={() => onToggleAvailable(item)}
+          disabled={loading}
+          title={item.available ? "Mark as unavailable" : "Mark as available"}
+          className="p-2.5 sm:p-1.5 rounded-lg hover:bg-[#f5e8c7] transition-colors text-lg sm:text-sm disabled:opacity-50"
+        >
+          {item.available ? "🟢" : "⭕"}
+        </button>
+        <button
+          onClick={() => onEdit(item)}
+          disabled={loading}
+          className="p-2.5 sm:p-1.5 rounded-lg hover:bg-[#f5e8c7] transition-colors text-lg sm:text-sm disabled:opacity-50"
+          title="Edit"
+        >
+          ✏️
+        </button>
+        <button
+          onClick={() => onDelete(item)}
+          disabled={loading}
+          className="p-2.5 sm:p-1.5 rounded-lg hover:bg-red-50 transition-colors text-lg sm:text-sm disabled:opacity-50"
+          title="Delete"
+        >
+          🗑️
+        </button>
+      </div>
     </div>
   </div>
 );
