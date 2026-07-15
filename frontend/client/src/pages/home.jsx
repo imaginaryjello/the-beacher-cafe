@@ -87,8 +87,9 @@ function Home() {
             className="w-full h-full  brightness-[0.99] object-center object-cover"
           />
 
-          {/* Warm vintage overlay */}
-          <div className="absolute inset-0 bg-linear-to-b via-transparent" />
+          {/* Warm vintage overlay — light in the middle so the photo glows,
+              darker at top/bottom so navbar area and scroll cue stay legible */}
+          <div className="absolute inset-0 bg-linear-to-b from-[#1f1209]/45 via-[#1f1209]/15 to-[#1f1209]/70" />
         </div>
         <Navbar />
 
@@ -133,9 +134,16 @@ function Home() {
           </svg>
         </div>
       </section>
+      {/* Warm cream ground for everything between hero and footer.
+          WHY -mb-16: Footer has mt-16; negative margin keeps that gap cream
+          instead of flashing page-white between cream and the dark footer. */}
+      <div className="bg-[#f5e8c7] pb-24 -mb-16 text-[#3f2a1d]">
       {/* //home about section with years of service, awards,   */}
-      <section className="mt-20 text-center px-6">
-        <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-8">
+      <section className="pt-20 text-center px-6">
+        <p className="text-[#c2410c] text-sm tracking-[4px] uppercase mb-3">
+          Nearly four decades on the corner
+        </p>
+        <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold font-serif mb-8">
           Legacy of Excellence
         </h2>
         <p className="text-lg md:text-xl max-w-3xl mx-auto mb-6">
@@ -149,19 +157,19 @@ function Home() {
             <h3 className="text-2xl font-semibold mb-2">
               20+ Years of Service
             </h3>
-            <p className="text-gray-600">Serving the community since 2003</p>
+            <p className="text-[#6b5a47]">Serving the community since 2003</p>
           </div>
           <div>
             <h3 className="text-2xl font-semibold mb-2">
               Award-Winning Cuisine
             </h3>
-            <p className="text-gray-600">Recognized for culinary excellence</p>
+            <p className="text-[#6b5a47]">Recognized for culinary excellence</p>
           </div>
           <div>
             <h3 className="text-2xl font-semibold mb-2">
               Sustainability Commitment
             </h3>
-            <p className="text-gray-600">
+            <p className="text-[#6b5a47]">
               Proudly supporting local and eco-friendly practices
             </p>
           </div>
@@ -169,7 +177,7 @@ function Home() {
         <button>
           <a
             href="/about"
-            className="mt-10 inline-flex items-center justify-center px-8 py-4 text-lg font-semibold bg-amber-600 hover:bg-amber-700 text-white rounded-full transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="mt-10 inline-flex items-center justify-center px-8 py-4 text-lg font-semibold bg-[#c2410c] hover:bg-[#9a3410] text-white rounded-full transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Learn More About Us
           </a>
@@ -187,7 +195,10 @@ function Home() {
       "See all specials" → link to full menu */}
 
         <div className="mt-20 px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8">
+          <p className="text-[#c2410c] text-sm tracking-[4px] uppercase mb-3">
+            Fresh today
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold font-serif mb-8">
             Today's Specials
           </h2>
           <div className="mb-10">
@@ -206,14 +217,30 @@ function Home() {
           </div>
         </div>
       </section>
-      <section className="mt-10 px-6 text-center">
-        <h2 className="text-3xl font-bold mb-6">Ready to Join Us?</h2>
-        <a
-          href="/reservations"
-          className="inline-block bg-amber-600 text-white px-10 py-5 text-xl rounded-full hover:bg-amber-700 transition-all"
-        >
-          Reserve Your Table Now →
-        </a>
+      {/* CTA — night storefront band, same treatment as the menu page */}
+      <section className="mt-10 px-4 sm:px-6">
+        <div className="relative rounded-3xl overflow-hidden shadow-xl max-w-5xl mx-auto">
+          <img
+            src="/frontbeacher.webp"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[#1f1209]/70" />
+          <div className="relative z-10 text-center py-12 sm:py-16 px-6 text-[#f5e8c7]">
+            <p className="text-xs tracking-[3px] text-[#e8a87c] mb-3">
+              A SEAT WILL BE WAITING
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-bold font-serif mb-6">
+              Ready to Join Us?
+            </h2>
+            <a
+              href="/reservations"
+              className="inline-block bg-[#c2410c] hover:bg-[#9a3410] text-white px-8 py-3 rounded-full font-semibold transition-colors shadow-lg"
+            >
+              Reserve Your Table Now →
+            </a>
+          </div>
+        </div>
       </section>
 
       {/* WHY 4 column divs instead of a flat grid: this gives the masonry-style
@@ -243,15 +270,15 @@ function Home() {
 
       {/* Visit Us */}
       <section className="w-full max-w-4xl mx-auto mt-20 px-4">
-        <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-lg bg-white">
+        <div className="border border-[#3f2a1d]/15 rounded-2xl overflow-hidden shadow-lg bg-white">
           {/* Header */}
-          <div className="px-8 pt-8 pb-6 border-b border-gray-100">
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">
+          <div className="px-8 pt-8 pb-6 border-b border-[#3f2a1d]/10">
+            <h2 className="text-3xl font-bold font-serif text-[#3f2a1d] tracking-tight">
               Visit Us
             </h2>
             <AnnouncementBanner />
 
-            <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 text-gray-500 text-sm">
+            <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 text-[#6b5a47] text-sm">
               <span className="flex items-center gap-1.5">
                 <svg
                   className="w-4 h-4 text-rose-500 shrink-0"
@@ -305,6 +332,7 @@ function Home() {
           </div>
         </div>
       </section>
+      </div>
 
       <Footer />
     </>
