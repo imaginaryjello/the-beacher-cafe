@@ -83,16 +83,24 @@ export default function About() {
       <Navbar />
 
       <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d] pt-24">
-        {/* HERO */}
-        <header className="bg-[#3f2a1d] py-20 text-center">
-          <div className="max-w-3xl mx-auto px-6">
-            <p className="text-[#c2410c] text-sm tracking-[4px] uppercase mb-4">
+        {/* HERO — the corner at golden hour, story text over it */}
+        <header className="relative py-24 md:py-32 text-center overflow-hidden">
+          <div className="absolute inset-0">
+            <img
+              src="/beacherfront.webp"
+              alt=""
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-linear-to-b from-[#1f1209]/70 via-[#1f1209]/60 to-[#1f1209]/85" />
+          </div>
+          <div className="relative z-10 max-w-3xl mx-auto px-6">
+            <p className="text-[#e8a87c] text-sm tracking-[4px] uppercase mb-4">
               Est. 1986 • Queen Street East, Toronto
             </p>
-            <h1 className="font-[Pacifico] text-[#f5e8c7] text-5xl sm:text-6xl md:text-7xl mb-6">
+            <h1 className="font-[Pacifico] text-[#f5e8c7] text-5xl sm:text-6xl md:text-7xl mb-6 drop-shadow-lg">
               Our Story
             </h1>
-            <p className="text-[#d4b896] text-lg italic leading-relaxed">
+            <p className="text-[#f5e8c7]/90 text-lg italic leading-relaxed">
               A small corner café where mornings begin the same way they did
               decades ago — with familiar faces, steady routines, and a place
               that always feels like it was kept for you.
@@ -137,9 +145,17 @@ export default function About() {
           </div>
         </section>
 
-        {/* A PLACE THAT STAYED */}
-        <section className="py-20 px-6 bg-[#e8d9b5]">
-          <div className="max-w-3xl mx-auto text-lg leading-relaxed space-y-6">
+        {/* A PLACE THAT STAYED — over the storefront at night */}
+        <section className="relative py-20 md:py-28 px-6 overflow-hidden">
+          <div className="absolute inset-0">
+            <img
+              src="/frontbeacher.webp"
+              alt=""
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-[#1f1209]/80" />
+          </div>
+          <div className="relative z-10 max-w-3xl mx-auto text-lg leading-relaxed space-y-6 text-[#f5e8c7]">
             <h2 className="text-3xl font-bold text-center mb-8">
               A Place That Stayed
             </h2>
@@ -184,16 +200,60 @@ export default function About() {
           </div>
         </section>
 
-        {/* FAMILY QUOTES */}
-        <section className="bg-[#3f2a1d] py-20 text-[#f5e8c7] text-center px-6">
-          <div className="max-w-2xl mx-auto">
+        {/* THE TILE WALL — art by our regulars */}
+        <section className="py-20 px-6 bg-[#f5e8c7]">
+          <div className="max-w-5xl mx-auto">
+            <p className="text-center text-[#c2410c] text-sm tracking-[4px] uppercase mb-3">
+              Painted by you
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6">
+              The Walls Do the Talking
+            </h2>
+            <p className="max-w-2xl mx-auto text-center text-[#5a3e2b] text-lg leading-relaxed mb-12">
+              Look closely next time you're in. Hand-painted tiles cover our
+              walls — each one made by a regular, a neighbour, a kid waiting on
+              pancakes. Decades of the Beaches, painted one square at a time.
+            </p>
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+              <figure>
+                <img
+                  src="/wallart2.webp"
+                  alt="Wall of hand-painted tiles at the café, portraits and scenes by regulars"
+                  className="w-full h-64 sm:h-80 object-cover rounded-2xl border-8 border-[#3f2a1d] shadow-xl"
+                />
+                <figcaption className="text-sm text-[#6b5a47] italic mt-3 text-center">
+                  Faces, pets, and little worlds — every square someone's story.
+                </figcaption>
+              </figure>
+              <figure>
+                <img
+                  src="/frontartwall.webp"
+                  alt="Tile mural by the front counter, painted by neighbourhood kids and regulars"
+                  className="w-full h-64 sm:h-80 object-cover rounded-2xl border-8 border-[#3f2a1d] shadow-xl"
+                />
+                <figcaption className="text-sm text-[#6b5a47] italic mt-3 text-center">
+                  The wall by the front counter — still growing, tile by tile.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        {/* FAMILY QUOTES — mural as a faint texture behind the words */}
+        <section className="relative bg-[#3f2a1d] py-20 text-[#f5e8c7] text-center px-6 overflow-hidden">
+          <img
+            src="/wallart2.webp"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-10"
+          />
+          <div className="relative z-10 max-w-2xl mx-auto">
             <p className="text-xl italic leading-relaxed mb-8">
               “{FAMILY_QUOTES[quoteIdx].quote}”
             </p>
             <p className="text-[#d4b896]">— {FAMILY_QUOTES[quoteIdx].author}</p>
           </div>
 
-          <div className="flex justify-center gap-4 mt-10">
+          <div className="relative z-10 flex justify-center gap-4 mt-10">
             <button
               onClick={prevQuote}
               className="px-6 py-3 border border-[#c2410c] text-sm"
