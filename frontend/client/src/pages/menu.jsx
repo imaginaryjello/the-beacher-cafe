@@ -96,16 +96,23 @@ const Menu = () => {
     <>
       <Navbar />
       <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d] pt-24">
-        {/* ── HERO HEADER ── */}
-        <div className="bg-[#3f2a1d] text-[#f5e8c7] py-10 md:py-14 px-4 text-center relative">
-          <div className="absolute inset-0 bg-[radial-gradient(#f5e8c7_0.8px,transparent_0.8px)] bg-size-[12px_12px] opacity-10" />
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-[2px] sm:tracking-[4px] leading-none">
+        {/* ── HERO HEADER — the famous hollandaise, plated ── */}
+        <div className="relative text-[#f5e8c7] py-14 md:py-20 px-4 text-center overflow-hidden">
+          <div className="absolute inset-0">
+            <img
+              src="/benamyn.png"
+              alt=""
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-linear-to-b from-[#1f1209]/85 via-[#1f1209]/70 to-[#1f1209]/85" />
+          </div>
+          <h1 className="relative z-10 text-4xl sm:text-6xl md:text-7xl font-black tracking-[2px] sm:tracking-[4px] leading-none drop-shadow-lg">
             THE BEACHER CAFÉ
           </h1>
-          <p className="mt-3 text-base sm:text-xl md:text-2xl tracking-widest opacity-90">
+          <p className="relative z-10 mt-3 text-base sm:text-xl md:text-2xl tracking-widest opacity-90">
             EST. 1986 • TORONTO'S NEIGHBOURHOOD CAFÉ
           </p>
-          <div className="relative inline-block mt-5 md:mt-0 md:absolute md:bottom-6 md:right-8 bg-[#c2410c] text-[#f5e8c7] text-xs font-bold px-6 py-1 rounded-full rotate-[-8deg] shadow-md">
+          <div className="relative z-10 inline-block mt-5 md:mt-0 md:absolute md:bottom-6 md:right-8 bg-[#c2410c] text-[#f5e8c7] text-xs font-bold px-6 py-1 rounded-full rotate-[-8deg] shadow-md">
             FAMOUS HOLLANDAISE SINCE 1986
           </div>
         </div>
@@ -359,6 +366,30 @@ const Menu = () => {
               />
             </div>
           </section>
+          {/* ── STORY BAND — menu readers become reservations ── */}
+          <section className="relative rounded-3xl overflow-hidden mb-20 shadow-xl">
+            <img
+              src="/steakegg.png"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-[#1f1209]/70" />
+            <div className="relative z-10 text-center py-12 sm:py-16 px-6 text-[#f5e8c7]">
+              <p className="text-xs tracking-[3px] text-[#e8a87c] mb-3">
+                FROM OUR KITCHEN TO YOUR TABLE
+              </p>
+              <h3 className="text-2xl sm:text-3xl font-bold mb-6">
+                Cooked on this corner since 1986.
+              </h3>
+              <a
+                href="/reservations"
+                className="inline-block bg-[#c2410c] hover:bg-[#9a3410] text-white px-8 py-3 rounded-full font-semibold transition-colors shadow-lg"
+              >
+                Reserve Your Table
+              </a>
+            </div>
+          </section>
+
           {/* Desserts */}
           <section className="bg-white border border-[#e8d9b8] rounded-3xl p-6 sm:p-10 shadow mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10">
