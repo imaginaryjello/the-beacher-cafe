@@ -101,7 +101,7 @@ export default function Reservations() {
   if (success) {
     return (
       <>
-        <Navbar />
+        <Navbar transparent />
         {/* WHY -mb-16: Footer has mt-16, which shows a white band between our
           dark backdrop and the dark footer. Negative margin makes them flush. */}
       <div className="min-h-screen relative pt-24 sm:pt-28 px-4 sm:px-6 pb-16 -mb-16">
@@ -159,7 +159,7 @@ export default function Reservations() {
   // ── FORM ──
   return (
     <>
-      <Navbar />
+      <Navbar transparent />
       {/* WHY -mb-16: Footer has mt-16, which shows a white band between our
           dark backdrop and the dark footer. Negative margin makes them flush. */}
       <div className="min-h-screen relative pt-24 sm:pt-28 px-4 sm:px-6 pb-16 -mb-16">

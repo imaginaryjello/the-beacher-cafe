@@ -94,10 +94,11 @@ const Menu = () => {
 
   return (
     <>
-      <Navbar />
-      <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d] pt-24">
-        {/* ── HERO HEADER — the famous hollandaise, plated ── */}
-        <div className="relative text-[#f5e8c7] py-14 md:py-20 px-4 text-center overflow-hidden">
+      <Navbar transparent />
+      <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d]">
+        {/* ── HERO HEADER — the famous hollandaise, plated, running up
+            behind the transparent navbar ── */}
+        <div className="relative text-[#f5e8c7] pt-32 pb-14 md:pt-40 md:pb-20 px-4 text-center overflow-hidden">
           <div className="absolute inset-0">
             <img
               src="/benamyn.png"

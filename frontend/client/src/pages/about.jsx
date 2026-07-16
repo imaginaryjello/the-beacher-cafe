@@ -80,11 +80,12 @@ export default function About() {
 
   return (
     <>
-      <Navbar />
+      <Navbar transparent />
 
-      <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d] pt-24">
-        {/* HERO — the corner at golden hour, story text over it */}
-        <header className="relative py-24 md:py-32 text-center overflow-hidden">
+      <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d]">
+        {/* HERO — the corner at golden hour, running up behind the
+            transparent navbar */}
+        <header className="relative pt-36 pb-24 md:pt-44 md:pb-32 text-center overflow-hidden">
           <div className="absolute inset-0">
             <img
               src="/beacherfront.webp"
