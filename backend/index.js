@@ -19,6 +19,10 @@ import { startCronJobs } from "./utils/cronjobs.js";
 dotenv.config();
 
 const app = express();
+// WHY: Render/Railway sit behind a reverse proxy. Without this,
+// express-rate-limit keys every request on the proxy's single IP,
+// so one abusive visitor exhausts the limit for ALL customers.
+app.set("trust proxy", 1);
 app.use(helmet());
 app.use(express.json());
 app.use(
