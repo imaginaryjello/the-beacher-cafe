@@ -20,9 +20,9 @@ const FALLBACK_GALLERY = [
   { _id: "g2", imageUrl: "/brieburger.png", caption: "" },
   { _id: "g3", imageUrl: "/steakegg.png", caption: "" },
   { _id: "g4", imageUrl: "/somkedsalmon.png", caption: "" },
-  { _id: "g5", imageUrl: "/image copy 11.png", caption: "" },
+  { _id: "g5", imageUrl: "/cajunchicken.png", caption: "" },
   { _id: "g6", imageUrl: "/turkey.jpg", caption: "" },
-  { _id: "g7", imageUrl: "/image copy 12.png", caption: "" },
+  { _id: "g7", imageUrl: "/clubsandwich.png", caption: "" },
 ];
 
 const FALLBACK_SPECIALS = [
@@ -35,7 +35,7 @@ const FALLBACK_SPECIALS = [
   { _id: "f2", imageUrl: "/steakegg.png", title: "Steak & Eggs", price: 29.99 },
   {
     _id: "f3",
-    imageUrl: "/image copy 12.png",
+    imageUrl: "/cajunchicken.png",
     title: "Cajun Chicken Caesar Salad",
     price: 14.99,
   },
@@ -82,7 +82,7 @@ function Home() {
         {/* Background image with overlay */}
         <div className="absolute inset-0">
           <img
-            src="/image copy 3.png"
+            src="/beachereastfront.png"
             alt="The Beacher Cafe ocean terrace at golden hour"
             className="w-full h-full  brightness-[0.99] object-center object-cover"
           />
@@ -325,7 +325,7 @@ function Home() {
               />
               <div className="relative overflow-hidden group h-56 md:h-auto">
                 <img
-                  src="/image copy 5.png"
+                  src="/oldstreetcarcafe.png"
                   alt="Our cafe"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 bg-linear-to-l via-transparent"
                 />

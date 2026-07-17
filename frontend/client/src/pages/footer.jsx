@@ -17,14 +17,6 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#3f2a1d] text-[#f5e8c7] mt-16">
-      {/* Tile mural strip — the community's art underlining every page */}
-      <img
-        src="/wallart2.webp"
-        alt=""
-        aria-hidden="true"
-        className="w-full h-10 object-cover"
-      />
-
       <div className="max-w-6xl mx-auto px-6 py-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {/* Brand */}
         <div>
@@ -42,12 +34,13 @@ export default function Footer() {
 
         {/* Explore */}
         <div>
-          <h2 className="text-xl font-semibold mb-4 text-[#c2410c]">
-            Explore
-          </h2>
+          <h2 className="text-xl font-semibold mb-4 text-[#c2410c]">Explore</h2>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/menu" className="hover:text-[#c2410c] transition-colors">
+              <Link
+                to="/menu"
+                className="hover:text-[#c2410c] transition-colors"
+              >
                 Our Menu
               </Link>
             </li>
@@ -60,7 +53,10 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/about" className="hover:text-[#c2410c] transition-colors">
+              <Link
+                to="/about"
+                className="hover:text-[#c2410c] transition-colors"
+              >
                 Our Story
               </Link>
             </li>
@@ -73,7 +69,10 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/login" className="hover:text-[#c2410c] transition-colors">
+              <Link
+                to="/login"
+                className="hover:text-[#c2410c] transition-colors"
+              >
                 Staff Login
               </Link>
             </li>
@@ -82,9 +81,7 @@ export default function Footer() {
 
         {/* Contact + Hours — dynamic from settings */}
         <div>
-          <h2 className="text-xl font-semibold mb-4 text-[#c2410c]">
-            Find Us
-          </h2>
+          <h2 className="text-xl font-semibold mb-4 text-[#c2410c]">Find Us</h2>
           <p className="text-sm mb-2">
             <a
               href={mapsUrl}
