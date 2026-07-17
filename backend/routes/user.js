@@ -5,7 +5,11 @@ import jwt from "jsonwebtoken"; // ← ADD THIS
 import Employee from "../model/employeeSchema.js";
 import crypto from "crypto"; // for token regeneration
 import Notification from "../model/notificationSchema.js";
-import { verifyToken, requireAdmin } from "../middleware/auth.js";
+import {
+  verifyToken,
+  requireAdmin,
+  requireAccepted,
+} from "../middleware/auth.js";
 import rateLimit from "express-rate-limit";
 import { sendPasswordResetEmail } from "../config/email.js"; // import the email function
 
@@ -185,7 +189,7 @@ router.post("/login", authLimiter, async (req, res) => {
 // WHAT CHANGES: Now protected by verifyToken + requireAccepted (implicit via verifyToken)
 // WHY: Before, any unauthenticated request could see all employee records.
 // ============================================
-router.get("/", verifyToken, async (req, res) => {
+router.get("/", verifyToken, requireAccepted, async (req, res) => {
   try {
     const employees = await Employee.find().select("-password");
 
