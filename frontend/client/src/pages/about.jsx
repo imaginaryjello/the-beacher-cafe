@@ -303,7 +303,7 @@ export default function About() {
           </p>
 
           <img
-            src="/vertyplace.png"
+            src="/vertyplace.webp"
             alt="The History"
             className="mx-auto w-full max-w-4xl rounded-2xl shadow-xl border-8 border-[#3f2a1d]"
           />
