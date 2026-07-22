@@ -7,7 +7,7 @@
     "test": "npm run dev",
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "seed": "node --experimental-vm-modules ./script.js"
+    "create-admin": "node scripts/createAdmin.js"
   },
   "author": "Nishan",
   "license": "ISC",
