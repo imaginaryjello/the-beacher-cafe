@@ -1,5 +1,6 @@
 // backend/routes/menu.js
 import express from "express";
+import { sendServerError } from "../utils/serverError.js";
 import Menu from "../model/menuSchema.js";
 import Notification from "../model/notificationSchema.js";
 import { verifyToken, requireCoAdminOrAdmin } from "../middleware/auth.js";
@@ -30,7 +31,7 @@ router.get("/", async (req, res) => {
     });
     res.json({ success: true, count: menuItems.length, menuItems });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -44,7 +45,7 @@ router.get("/:id", async (req, res) => {
         .json({ success: false, message: "Item not found" });
     res.json({ success: true, menuItem: item });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -114,7 +115,7 @@ router.post("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
         .status(400)
         .json({ success: false, message: messages.join(", ") });
     }
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -207,7 +208,7 @@ router.put("/:id", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
         .status(400)
         .json({ success: false, message: messages.join(", ") });
     }
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -258,7 +259,7 @@ router.patch(
         menuItem: updated,
       });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      return sendServerError(res, error);
     }
   },
 );
@@ -290,7 +291,7 @@ router.delete("/:id", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
       message: `"${deleted.name}" has been removed from the menu.`,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 

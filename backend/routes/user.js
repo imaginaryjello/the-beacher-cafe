@@ -103,7 +103,6 @@ router.post("/register", authLimiter, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error creating new member",
-      error: error.message,
     });
   }
 });
@@ -177,7 +176,6 @@ router.post("/login", authLimiter, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error during login",
-      error: error.message,
     });
   }
 });
@@ -203,7 +201,6 @@ router.get("/", verifyToken, requireAccepted, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error fetching employees",
-      error: error.message,
     });
   }
 });
@@ -226,10 +223,10 @@ router.get("/pending", verifyToken, requireAdmin, async (req, res) => {
       employees: pendingEmployees,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error fetching pending employees",
-      error: error.message,
     });
   }
 });
@@ -279,10 +276,10 @@ router.patch("/approve/:id", verifyToken, requireAdmin, async (req, res) => {
       employee: updated,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error approving employee",
-      error: error.message,
     });
   }
 });
@@ -313,10 +310,10 @@ router.delete("/reject/:id", verifyToken, requireAdmin, async (req, res) => {
       message: `${deleted.name}'s signup request has been rejected and removed.`,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error rejecting employee",
-      error: error.message,
     });
   }
 });
@@ -375,10 +372,10 @@ router.patch("/promote/:id", verifyToken, requireAdmin, async (req, res) => {
       employee: updated,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error updating role",
-      error: error.message,
     });
   }
 });
@@ -420,10 +417,10 @@ router.patch("/deactivate/:id", verifyToken, requireAdmin, async (req, res) => {
       employee: updated,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error deactivating employee",
-      error: error.message,
     });
   }
 });
@@ -450,6 +447,7 @@ router.get("/profile", verifyToken, async (req, res) => {
     }
     res.json({ success: true, employee });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ success: false, message: "Error fetching profile" });
   }
 });
@@ -504,6 +502,7 @@ router.patch("/profile", verifyToken, async (req, res) => {
 
     res.json({ success: true, employee: updated, message: "Profile updated" });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ success: false, message: "Error updating profile" });
   }
 });

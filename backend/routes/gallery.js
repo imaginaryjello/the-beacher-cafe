@@ -1,4 +1,5 @@
 import express from "express";
+import { sendServerError } from "../utils/serverError.js";
 import { cloudinary } from "../config/cloudinary.js";
 import Gallery from "../model/galleryImage.js";
 import { verifyToken, requireCoAdminOrAdmin } from "../middleware/auth.js";
@@ -15,7 +16,7 @@ router.get("/", async (req, res) => {
     const images = await Gallery.find().sort({ order: 1, createdAt: -1 });
     res.json({ success: true, images });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -48,7 +49,7 @@ router.post("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
 
     res.status(201).json({ success: true, image });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -72,7 +73,7 @@ router.patch("/:id", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
     }
     res.json({ success: true, image });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -97,7 +98,7 @@ router.delete("/:id", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
 
     res.json({ success: true, message: "Image deleted" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 

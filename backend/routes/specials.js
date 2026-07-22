@@ -1,4 +1,5 @@
 import express from "express";
+import { sendServerError } from "../utils/serverError.js";
 import { cloudinary } from "../config/cloudinary.js";
 import Special from "../model/specialSchema.js";
 import { verifyToken, requireCoAdminOrAdmin } from "../middleware/auth.js";
@@ -17,7 +18,7 @@ router.get("/", async (req, res) => {
     const specials = await Special.find().sort({ active: -1, displayOrder: 1, createdAt: -1 });
     res.json({ success: true, specials });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -49,7 +50,7 @@ router.post("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
 
     res.status(201).json({ success: true, special });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -91,7 +92,7 @@ router.put("/:id", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
 
     res.json({ success: true, special });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -119,7 +120,7 @@ router.patch("/:id/active", verifyToken, requireCoAdminOrAdmin, async (req, res)
       message: `"${special.title}" is now ${active ? "active" : "inactive"}`,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -144,7 +145,7 @@ router.delete("/:id", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
 
     res.json({ success: true, message: `"${special.title}" deleted` });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 

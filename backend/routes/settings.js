@@ -1,5 +1,6 @@
 // backend/routes/settings.js
 import express from "express";
+import { sendServerError } from "../utils/serverError.js";
 import Settings from "../model/settingSchema.js";
 import Notification from "../model/notificationSchema.js";
 import Employee from "../model/employeeSchema.js";
@@ -40,7 +41,7 @@ router.get("/", async (req, res) => {
     const settings = await getSettings();
     res.json({ success: true, settings });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -87,7 +88,7 @@ router.put("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
 
     res.json({ success: true, message: "Settings updated.", settings });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -138,7 +139,7 @@ router.post(
         blockedDates: settings.blockedDates,
       });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      return sendServerError(res, error);
     }
   },
 );
@@ -185,7 +186,7 @@ router.delete(
         blockedDates: settings.blockedDates,
       });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      return sendServerError(res, error);
     }
   },
 );

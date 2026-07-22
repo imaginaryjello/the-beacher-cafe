@@ -1,4 +1,5 @@
 import express from "express";
+import { sendServerError } from "../utils/serverError.js";
 import {
   cloudinary,
   upload,
@@ -100,7 +101,7 @@ router.delete("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
