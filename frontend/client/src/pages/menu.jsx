@@ -219,6 +219,7 @@ const Menu = () => {
               {/* Featured cards — keep static since they have images */}
               <div className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group">
                 <img
+        loading="lazy"
                   src="/benamyn.webp"
                   alt="Eggs Benjamyn"
                   className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
@@ -240,6 +241,7 @@ const Menu = () => {
               </div>
               <div className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group">
                 <img
+        loading="lazy"
                   src="/steakegg.webp"
                   alt="Steak & Eggs"
                   className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
@@ -370,6 +372,7 @@ const Menu = () => {
           {/* ── STORY BAND — menu readers become reservations ── */}
           <section className="relative rounded-3xl overflow-hidden mb-20 shadow-xl">
             <img
+        loading="lazy"
               src="/steakegg.webp"
               alt=""
               className="absolute inset-0 w-full h-full object-cover"

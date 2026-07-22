@@ -4,6 +4,7 @@ function ImageGrid(Props) {
   return (
     <div>
       <img
+        loading="lazy"
         className="h-auto max-w-full rounded-base"
         src={Props.src}
         alt={Props.alt}

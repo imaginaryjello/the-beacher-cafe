@@ -150,6 +150,7 @@ export default function About() {
         <section className="relative py-20 md:py-28 px-6 overflow-hidden">
           <div className="absolute inset-0">
             <img
+        loading="lazy"
               src="/frontbeacher.webp"
               alt=""
               className="w-full h-full object-cover"
@@ -218,6 +219,7 @@ export default function About() {
             <div className="grid md:grid-cols-2 gap-6 md:gap-8">
               <figure>
                 <img
+        loading="lazy"
                   src="/wallart2.webp"
                   alt="Wall of hand-painted tiles at the café, portraits and scenes by regulars"
                   className="w-full h-64 sm:h-80 object-cover rounded-2xl border-8 border-[#3f2a1d] shadow-xl"
@@ -228,6 +230,7 @@ export default function About() {
               </figure>
               <figure>
                 <img
+        loading="lazy"
                   src="/frontartwall.webp"
                   alt="Tile mural by the front counter, painted by neighbourhood kids and regulars"
                   className="w-full h-64 sm:h-80 object-cover rounded-2xl border-8 border-[#3f2a1d] shadow-xl"
@@ -243,6 +246,7 @@ export default function About() {
         {/* FAMILY QUOTES — mural as a faint texture behind the words */}
         <section className="relative bg-[#3f2a1d] py-20 text-[#f5e8c7] text-center px-6 overflow-hidden">
           <img
+        loading="lazy"
             src="/wallart2.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-cover opacity-10"
@@ -303,6 +307,7 @@ export default function About() {
           </p>
 
           <img
+        loading="lazy"
             src="/vertyplace.webp"
             alt="The History"
             className="mx-auto w-full max-w-4xl rounded-2xl shadow-xl border-8 border-[#3f2a1d]"

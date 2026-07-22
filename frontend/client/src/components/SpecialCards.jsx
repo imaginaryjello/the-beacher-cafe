@@ -4,6 +4,7 @@ function SpecialCards(props) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <img
+        loading="lazy"
         src={props.image}
         alt={props.title}
         className="w-full h-48 object-cover"

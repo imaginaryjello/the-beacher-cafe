@@ -138,6 +138,7 @@ export default function Reservations() {
             {/* The community tile wall — a little story while they wait */}
             <figure className="mt-8">
               <img
+        loading="lazy"
                 src="/wallart2.webp"
                 alt="Tile mural at The Beacher Café, each square hand-painted by a regular"
                 className="w-full h-24 object-cover rounded-xl border-2 border-[#3f2a1d]/15"
@@ -172,6 +173,7 @@ export default function Reservations() {
               Banner on phones, full-height column from md+. */}
           <div className="relative md:col-span-2 h-72 sm:h-80 md:h-auto">
             <img
+        loading="lazy"
               src="/frontbeacher.webp"
               alt="The Beacher Café storefront glowing at night"
               className="absolute inset-0 w-full h-full object-cover"
@@ -197,6 +199,7 @@ export default function Reservations() {
               </p>
               <figure>
                 <img
+        loading="lazy"
                   src="/wallart2.webp"
                   alt="Tile mural, each square hand-painted by a café regular"
                   className="w-full h-16 sm:h-24 object-cover rounded-xl border-2 border-[#f5e8c7]/30"

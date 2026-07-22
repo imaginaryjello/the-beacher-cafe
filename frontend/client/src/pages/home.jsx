@@ -224,6 +224,7 @@ function Home() {
         <section className="mt-10 px-4 sm:px-6">
           <div className="relative rounded-3xl overflow-hidden shadow-xl max-w-5xl mx-auto">
             <img
+        loading="lazy"
               src="/frontbeacher.webp"
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
@@ -325,6 +326,7 @@ function Home() {
               />
               <div className="relative overflow-hidden group h-56 md:h-auto">
                 <img
+        loading="lazy"
                   src="/oldstreetcarcafe.webp"
                   alt="Our cafe"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 bg-linear-to-l via-transparent"
