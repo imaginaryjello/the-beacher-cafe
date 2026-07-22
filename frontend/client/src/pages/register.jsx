@@ -17,14 +17,18 @@ export default function Register() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
       const response = await axios.post(
@@ -33,16 +37,16 @@ export default function Register() {
       );
 
       if (response.data.success) {
-        alert("Registration successful! Please log in.");
-        navigate("/login");
+        // WHY a pause before redirecting: accounts need owner approval, so the
+        // user should read that before landing on the login page.
+        setSuccess(true);
+        setTimeout(() => navigate("/login"), 2500);
       } else {
-        alert(
-          "Registration failed: " + (response.data.message || "Unknown error"),
-        );
+        setError(response.data.message || "Registration failed.");
       }
     } catch (error) {
       console.error("Registration error:", error);
-      alert(
+      setError(
         error.response?.data?.message ||
           "Something went wrong. Please try again.",
       );
@@ -65,6 +69,19 @@ export default function Register() {
               The Beacher Café • Est. 1986
             </p>
           </div>
+
+          {success && (
+            <div className="bg-green-50 border border-green-300 text-green-800 px-4 py-3 rounded-xl mb-6 text-center">
+              Registration successful. The owner will review your request —
+              you'll be able to log in once approved.
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-6 text-center">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <input
