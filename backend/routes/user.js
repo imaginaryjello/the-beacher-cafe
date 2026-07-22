@@ -155,7 +155,9 @@ router.post("/login", authLimiter, async (req, res) => {
         email: employeeData.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" },
+      // WHY pin the algorithm: verifyToken only accepts HS256, so state it
+      // explicitly here too rather than relying on the library default.
+      { expiresIn: "7d", algorithm: "HS256" },
     );
 
     res.status(200).json({
