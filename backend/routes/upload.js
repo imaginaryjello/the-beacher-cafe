@@ -1,4 +1,5 @@
 import express from "express";
+import { sendServerError } from "../utils/serverError.js";
 import {
   cloudinary,
   upload,
@@ -86,9 +87,21 @@ router.delete("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
         success: true,
         message: "Image deleted successfully",
       });
+    } else if (result.result === "not found") {
+      // WHY success: the caller's goal is "image gone" — it already is.
+      // Treating this as an error would break cleanup of stale records.
+      res.json({
+        success: true,
+        message: "Image was already removed from Cloudinary",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: `Cloudinary could not delete the image (${result.result})`,
+      });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 

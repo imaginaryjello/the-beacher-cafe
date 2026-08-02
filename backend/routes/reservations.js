@@ -1,5 +1,6 @@
 // backend/routes/reservations.js
 import express from "express";
+import { sendServerError } from "../utils/serverError.js";
 import rateLimit from "express-rate-limit";
 import Reservation from "../model/ReservationSchema.js";
 import Notification from "../model/notificationSchema.js";
@@ -224,7 +225,7 @@ router.post("/", reservationLimiter, async (req, res) => {
         .status(400)
         .json({ success: false, message: messages.join(", ") });
     }
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -238,7 +239,7 @@ router.get("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
     const reservations = await Reservation.find(filter).sort({ createdAt: -1 });
     res.json({ success: true, count: reservations.length, reservations });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -302,7 +303,7 @@ router.patch(
         reservation: updated,
       });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      return sendServerError(res, error);
     }
   },
 );
@@ -320,7 +321,7 @@ router.delete("/:id", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
     }
     res.json({ success: true, message: "Reservation deleted." });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 

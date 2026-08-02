@@ -18,7 +18,24 @@ import { startCronJobs } from "./utils/cronjobs.js";
 
 dotenv.config();
 
+// WHY fail fast: without these the server would still boot and listen, then
+// 500 on every request — a silent, confusing failure in production. Better to
+// refuse to start with a clear message in the deploy log.
+const REQUIRED_ENV = ["MONGO_URL", "JWT_SECRET"];
+const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
+if (missingEnv.length > 0) {
+  console.error(
+    `Missing required environment variable(s): ${missingEnv.join(", ")}. ` +
+      `See .env.example.`,
+  );
+  process.exit(1);
+}
+
 const app = express();
+// WHY: Render/Railway sit behind a reverse proxy. Without this,
+// express-rate-limit keys every request on the proxy's single IP,
+// so one abusive visitor exhausts the limit for ALL customers.
+app.set("trust proxy", 1);
 app.use(helmet());
 app.use(express.json());
 app.use(

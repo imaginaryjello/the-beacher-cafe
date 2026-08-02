@@ -101,7 +101,7 @@ const Menu = () => {
         <div className="relative text-[#f5e8c7] pt-32 pb-14 md:pt-40 md:pb-20 px-4 text-center overflow-hidden">
           <div className="absolute inset-0">
             <img
-              src="/benamyn.png"
+              src="/benamyn.webp"
               alt=""
               className="w-full h-full object-cover"
             />
@@ -219,7 +219,8 @@ const Menu = () => {
               {/* Featured cards — keep static since they have images */}
               <div className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group">
                 <img
-                  src="/benamyn.png"
+        loading="lazy"
+                  src="/benamyn.webp"
                   alt="Eggs Benjamyn"
                   className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
                 />
@@ -240,7 +241,8 @@ const Menu = () => {
               </div>
               <div className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group">
                 <img
-                  src="/steakegg.png"
+        loading="lazy"
+                  src="/steakegg.webp"
                   alt="Steak & Eggs"
                   className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
                 />
@@ -370,7 +372,8 @@ const Menu = () => {
           {/* ── STORY BAND — menu readers become reservations ── */}
           <section className="relative rounded-3xl overflow-hidden mb-20 shadow-xl">
             <img
-              src="/steakegg.png"
+        loading="lazy"
+              src="/steakegg.webp"
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />

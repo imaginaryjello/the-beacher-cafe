@@ -77,6 +77,7 @@ const ImageUpload = ({
         // ── IMAGE PREVIEW ──
         <div className="relative rounded-xl overflow-hidden border border-[#3f2a1d]/20 bg-[#fdf8f0]">
           <img
+        loading="lazy"
             src={preview}
             alt="Preview"
             className="w-full h-40 object-cover"

@@ -16,13 +16,13 @@ const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 // WHY fallbacks for both sections: the home page should never look empty to a
 // visitor, even before the owner has uploaded anything to the dashboard.
 const FALLBACK_GALLERY = [
-  { _id: "g1", imageUrl: "/benamyn.png", caption: "" },
-  { _id: "g2", imageUrl: "/brieburger.png", caption: "" },
-  { _id: "g3", imageUrl: "/steakegg.png", caption: "" },
-  { _id: "g4", imageUrl: "/somkedsalmon.png", caption: "" },
-  { _id: "g5", imageUrl: "/cajunchicken.png", caption: "" },
+  { _id: "g1", imageUrl: "/benamyn.webp", caption: "" },
+  { _id: "g2", imageUrl: "/brieburger.webp", caption: "" },
+  { _id: "g3", imageUrl: "/steakegg.webp", caption: "" },
+  { _id: "g4", imageUrl: "/somkedsalmon.webp", caption: "" },
+  { _id: "g5", imageUrl: "/cajunchicken.webp", caption: "" },
   { _id: "g6", imageUrl: "/turkey.jpg", caption: "" },
-  { _id: "g7", imageUrl: "/clubsandwich.png", caption: "" },
+  { _id: "g7", imageUrl: "/clubsandwich.webp", caption: "" },
 ];
 
 const FALLBACK_SPECIALS = [
@@ -32,16 +32,16 @@ const FALLBACK_SPECIALS = [
     title: "Turkey Avocado Sandwich",
     price: 12.99,
   },
-  { _id: "f2", imageUrl: "/steakegg.png", title: "Steak & Eggs", price: 29.99 },
+  { _id: "f2", imageUrl: "/steakegg.webp", title: "Steak & Eggs", price: 29.99 },
   {
     _id: "f3",
-    imageUrl: "/cajunchicken.png",
+    imageUrl: "/cajunchicken.webp",
     title: "Cajun Chicken Caesar Salad",
     price: 14.99,
   },
   {
     _id: "f4",
-    imageUrl: "/somkedsalmon.png",
+    imageUrl: "/somkedsalmon.webp",
     title: "Smoked Salmon Bagel",
     price: 11.99,
   },
@@ -82,7 +82,7 @@ function Home() {
         {/* Background image with overlay */}
         <div className="absolute inset-0">
           <img
-            src="/beachereastfront.png"
+            src="/beachereastfront.webp"
             alt="The Beacher Cafe ocean terrace at golden hour"
             className="w-full h-full  brightness-[0.99] object-center object-cover"
           />
@@ -224,6 +224,7 @@ function Home() {
         <section className="mt-10 px-4 sm:px-6">
           <div className="relative rounded-3xl overflow-hidden shadow-xl max-w-5xl mx-auto">
             <img
+        loading="lazy"
               src="/frontbeacher.webp"
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
@@ -325,7 +326,8 @@ function Home() {
               />
               <div className="relative overflow-hidden group h-56 md:h-auto">
                 <img
-                  src="/oldstreetcarcafe.png"
+        loading="lazy"
+                  src="/oldstreetcarcafe.webp"
                   alt="Our cafe"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 bg-linear-to-l via-transparent"
                 />

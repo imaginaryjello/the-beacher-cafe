@@ -1,5 +1,6 @@
 // backend/routes/notifications.js
 import express from "express";
+import { sendServerError } from "../utils/serverError.js";
 import { verifyToken } from "../middleware/auth.js";
 import Notification from "../model/notificationSchema.js";
 
@@ -33,7 +34,7 @@ router.get("/unread-count", verifyToken, async (req, res) => {
 
     res.json({ success: true, count });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -70,7 +71,7 @@ router.get("/", verifyToken, async (req, res) => {
       notifications: formatted,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -91,7 +92,7 @@ router.patch("/read-all", verifyToken, async (req, res) => {
 
     res.json({ success: true, message: "All notifications marked as read." });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 
@@ -127,7 +128,7 @@ router.patch("/:id/read", verifyToken, async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return sendServerError(res, error);
   }
 });
 

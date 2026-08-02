@@ -40,13 +40,12 @@ const Dashboard = () => {
     { to: "/dashboard", label: "Dashboard Home", icon: "🏠" },
     { to: "/dashboard/members", label: "Members", icon: "👥" },
     { to: "/dashboard/menu", label: "Menu Editor", icon: "📋" },
-    { to: "/dashboard/specials", label: "Specials Editor", icon: "⭐" },
+
     { to: "/dashboard/gallery", label: "Gallery Manager", icon: "🖼️" },
     { to: "/dashboard/reservations", label: "Reservations", icon: "📅" },
     ...(isOwner || isCoAdmin
       ? [{ to: "/dashboard/settings", label: "Settings", icon: "⚙️" }]
       : []),
-    { to: "/dashboard/profile", label: "My Profile", icon: "👤" },
   ];
 
   return (
@@ -145,12 +144,10 @@ const Dashboard = () => {
               {location.pathname === "/dashboard" && "Home"}
               {location.pathname === "/dashboard/members" && "Team Members"}
               {location.pathname === "/dashboard/menu" && "Menu Editor"}
-              {location.pathname === "/dashboard/specials" && "Specials Editor"}
               {location.pathname === "/dashboard/gallery" && "Gallery Manager"}
               {location.pathname === "/dashboard/reservations" &&
                 "Reservations"}
               {location.pathname === "/dashboard/settings" && "Settings"}
-              {location.pathname === "/dashboard/profile" && "Profile"}
             </h2>
           </div>
 

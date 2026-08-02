@@ -64,21 +64,21 @@ function App() {
               </PrivateRoute>
             }
           >
-            <Route index element={<Settings page="Dashboard" />} />
+            <Route index element={<Profile page="Dashboard" />} />
             <Route path="members" element={<Members />} />
             <Route path="menu" element={<MenuEditor />} />
             {/* WHY both routes render GalleryManager: specials and gallery live
                 in one tabbed page. /specials defaults the active tab to "specials"
                 via state, but the component handles tab switching internally */}
-            <Route
+            {/* <Route
               path="specials"
               element={<GalleryManager defaultTab="specials" />}
-            />
+            /> */}
             <Route
               path="gallery"
               element={<GalleryManager defaultTab="gallery" />}
             />
-            <Route path="profile" element={<Profile />} />
+            {/* <Route path="profile" element={<Profile />} /> */}
 
             <Route path="reservations" element={<ReservationsList />} />
             <Route path="settings" element={<Settings />} />

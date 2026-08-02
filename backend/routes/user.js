@@ -5,7 +5,11 @@ import jwt from "jsonwebtoken"; // ← ADD THIS
 import Employee from "../model/employeeSchema.js";
 import crypto from "crypto"; // for token regeneration
 import Notification from "../model/notificationSchema.js";
-import { verifyToken, requireAdmin } from "../middleware/auth.js";
+import {
+  verifyToken,
+  requireAdmin,
+  requireAccepted,
+} from "../middleware/auth.js";
 import rateLimit from "express-rate-limit";
 import { sendPasswordResetEmail } from "../config/email.js"; // import the email function
 
@@ -99,7 +103,6 @@ router.post("/register", authLimiter, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error creating new member",
-      error: error.message,
     });
   }
 });
@@ -152,7 +155,9 @@ router.post("/login", authLimiter, async (req, res) => {
         email: employeeData.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" },
+      // WHY pin the algorithm: verifyToken only accepts HS256, so state it
+      // explicitly here too rather than relying on the library default.
+      { expiresIn: "7d", algorithm: "HS256" },
     );
 
     res.status(200).json({
@@ -173,7 +178,6 @@ router.post("/login", authLimiter, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error during login",
-      error: error.message,
     });
   }
 });
@@ -185,7 +189,7 @@ router.post("/login", authLimiter, async (req, res) => {
 // WHAT CHANGES: Now protected by verifyToken + requireAccepted (implicit via verifyToken)
 // WHY: Before, any unauthenticated request could see all employee records.
 // ============================================
-router.get("/", verifyToken, async (req, res) => {
+router.get("/", verifyToken, requireAccepted, async (req, res) => {
   try {
     const employees = await Employee.find().select("-password");
 
@@ -199,7 +203,6 @@ router.get("/", verifyToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error fetching employees",
-      error: error.message,
     });
   }
 });
@@ -222,10 +225,10 @@ router.get("/pending", verifyToken, requireAdmin, async (req, res) => {
       employees: pendingEmployees,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error fetching pending employees",
-      error: error.message,
     });
   }
 });
@@ -275,10 +278,10 @@ router.patch("/approve/:id", verifyToken, requireAdmin, async (req, res) => {
       employee: updated,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error approving employee",
-      error: error.message,
     });
   }
 });
@@ -309,10 +312,10 @@ router.delete("/reject/:id", verifyToken, requireAdmin, async (req, res) => {
       message: `${deleted.name}'s signup request has been rejected and removed.`,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error rejecting employee",
-      error: error.message,
     });
   }
 });
@@ -352,13 +355,6 @@ router.patch("/promote/:id", verifyToken, requireAdmin, async (req, res) => {
     }
 
     //notification for role change
-    Notification.create({
-      type: "system",
-      message: `${updated.name} role has been changed to ${role} by the owner.`,
-      relatedId: updated._id,
-    }).catch(() =>
-      console.error("Failed to create role change notification:", err),
-    );
     fireNotification({
       type: "role_change",
       message: `${updated.name} has been ${role === "coadmin" ? "promoted to Co-Admin" : "changed to Employee"}.`,
@@ -378,10 +374,10 @@ router.patch("/promote/:id", verifyToken, requireAdmin, async (req, res) => {
       employee: updated,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error updating role",
-      error: error.message,
     });
   }
 });
@@ -423,10 +419,10 @@ router.patch("/deactivate/:id", verifyToken, requireAdmin, async (req, res) => {
       employee: updated,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error deactivating employee",
-      error: error.message,
     });
   }
 });
@@ -453,6 +449,7 @@ router.get("/profile", verifyToken, async (req, res) => {
     }
     res.json({ success: true, employee });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ success: false, message: "Error fetching profile" });
   }
 });
@@ -507,6 +504,7 @@ router.patch("/profile", verifyToken, async (req, res) => {
 
     res.json({ success: true, employee: updated, message: "Profile updated" });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ success: false, message: "Error updating profile" });
   }
 });

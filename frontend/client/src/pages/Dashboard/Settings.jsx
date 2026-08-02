@@ -251,6 +251,10 @@ const Settings = () => {
 
   const isOwner = user?.role === "admin";
   const isCoAdmin = user?.role === "coadmin";
+  // WHY isManager: backend PUT now accepts admin OR coadmin, so both get
+  // the full settings page. Plain employees never see this page (no nav
+  // link) and get the lock screen if they type the URL directly.
+  const isManager = isOwner || isCoAdmin;
 
   useEffect(() => {
     fetch(`${API}/api/settings`)
@@ -359,7 +363,7 @@ const Settings = () => {
       <div className="text-center py-16">
         <p className="text-4xl mb-3">🔒</p>
         <p className="text-[#3f2a1d]" style={{ fontFamily: "Georgia, serif" }}>
-          Only the owner can edit settings.
+          Only the owner or a co-admin can edit settings.
         </p>
       </div>
     );
@@ -390,18 +394,16 @@ const Settings = () => {
   const label = "block text-xs font-medium text-[#6b5a47] mb-1";
   const input =
     "w-full p-2.5 border border-[#3f2a1d]/20 rounded-lg text-[#3f2a1d] bg-[#fdf8f0] focus:outline-none focus:border-[#c2410c] text-sm";
-  const preview = isOwner ? groupHours(settings.hours) : null;
+  const preview = isManager ? groupHours(settings.hours) : null;
 
   return (
     <div className="max-w-2xl" style={{ fontFamily: "Georgia, serif" }}>
       <div className="mb-6">
         <h1 className="text-3xl text-[#3f2a1d]">
-          {isOwner ? "Café Settings" : "Blocked Dates"}
+          Café Settings
         </h1>
         <p className="text-sm text-[#6b5a47] mt-1">
-          {isOwner
-            ? "These control your reservation form and public site."
-            : "Mark dates when no reservations should be accepted."}
+          These control your reservation form and public site.
         </p>
       </div>
 
@@ -415,20 +417,20 @@ const Settings = () => {
         </div>
       )}
 
-      {/* Owner-only banners */}
-      {isOwner && successMsg && (
+      {/* Manager banners */}
+      {isManager && successMsg && (
         <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 text-sm mb-4">
           ✓ {successMsg}
         </div>
       )}
-      {isOwner && dirty && (
+      {isManager && dirty && (
         <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-4 py-2 text-sm mb-4">
           You have unsaved changes.
         </div>
       )}
 
-      {/* ── OWNER-ONLY SECTIONS ── */}
-      {isOwner && (
+      {/* ── MANAGER SECTIONS (owner + co-admin) ── */}
+      {isManager && (
         <>
           {/* PER-DAY HOURS */}
           <div className="bg-white border border-[#3f2a1d]/10 rounded-xl p-6 mb-4 shadow-sm">
@@ -603,8 +605,8 @@ const Settings = () => {
         token={token}
       />
 
-      {/* Owner save button sits below blocked dates so layout flows top-to-bottom */}
-      {isOwner && (
+      {/* Save button sits below blocked dates so layout flows top-to-bottom */}
+      {isManager && (
         <button
           onClick={handleSave}
           disabled={saving}

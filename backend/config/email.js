@@ -3,6 +3,16 @@ import { Resend } from "resend";
 import dotenv from "dotenv";
 dotenv.config();
 
+// WHY the guard here and not only in index.js: ES module imports are hoisted,
+// so this file runs before index.js's env check. Without this, a missing key
+// throws an opaque error from inside node_modules with no hint of the cause.
+if (!process.env.RESEND_API_KEY) {
+  console.error(
+    "Missing required environment variable: RESEND_API_KEY. See .env.example.",
+  );
+  process.exit(1);
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // WHY onboarding@resend.dev: Resend's sandbox sender that works

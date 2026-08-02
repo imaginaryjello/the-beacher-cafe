@@ -31,7 +31,6 @@ export default function Login() {
 
       if (response.data.success) {
         login(response.data); // Save user + token in context
-        alert(`Welcome back, ${response.data.user.name}!`);
         navigate("/dashboard"); // Redirect to dashboard after login
         // // Redirect based on role
         if (
@@ -44,7 +43,12 @@ export default function Login() {
         }
       }
     } catch (err) {
-      setError(err.response?.data?.message);
+      // WHY the fallback: if the server is unreachable there is no response
+      // body, so this was setting undefined and the user saw nothing happen.
+      setError(
+        err.response?.data?.message ||
+          "Could not sign in. Please check your connection and try again.",
+      );
     } finally {
       setLoading(false);
     }
