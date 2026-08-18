@@ -57,6 +57,11 @@ export default function Register() {
 
   return (
     <>
+      <title>Join the Team — The Beacher Café</title>
+      <meta
+        name="description"
+        content="Create a staff account to join The Beacher Café team."
+      />
       <Navbar />
 
       <div className="min-h-screen bg-[#f5e8c7] pt-28 px-4 sm:px-6 pb-20">

@@ -56,6 +56,11 @@ export default function Login() {
 
   return (
     <>
+      <title>Staff Login — The Beacher Café</title>
+      <meta
+        name="description"
+        content="Staff login for The Beacher Café management dashboard."
+      />
       <Navbar />
 
       <div className="min-h-screen bg-[#f5e8c7] pt-28 px-4 sm:px-6 pb-20">

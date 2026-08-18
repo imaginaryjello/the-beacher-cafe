@@ -101,6 +101,11 @@ export default function Reservations() {
   if (success) {
     return (
       <>
+        <title>Reserve a Table — The Beacher Café</title>
+        <meta
+          name="description"
+          content="Book a table at The Beacher Café in the Beaches, Toronto. A seat is always ready for you."
+        />
         <Navbar transparent />
         {/* WHY -mb-16: Footer has mt-16, which shows a white band between our
           dark backdrop and the dark footer. Negative margin makes them flush. */}
@@ -160,6 +165,12 @@ export default function Reservations() {
   // ── FORM ──
   return (
     <>
+      {/* Per-page SEO — React 19 hoists these into <head> */}
+      <title>Reserve a Table — The Beacher Café</title>
+      <meta
+        name="description"
+        content="Book a table at The Beacher Café in the Beaches, Toronto. A seat is always ready for you."
+      />
       <Navbar transparent />
       {/* WHY -mb-16: Footer has mt-16, which shows a white band between our
           dark backdrop and the dark footer. Negative margin makes them flush. */}
