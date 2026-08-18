@@ -78,6 +78,12 @@ function Home() {
   }, []);
   return (
     <>
+      {/* Per-page SEO — React 19 hoists these into <head> */}
+      <title>The Beacher Café — Breakfast & Brunch in the Beaches, Toronto</title>
+      <meta
+        name="description"
+        content="A neighbourhood café at Queen & McLean since 1986 — all-day breakfast, famous Hollandaise, and a table that's always ready for you."
+      />
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden ">
         {/* Background image with overlay */}
         <div className="absolute inset-0">

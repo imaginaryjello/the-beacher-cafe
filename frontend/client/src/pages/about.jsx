@@ -80,6 +80,12 @@ export default function About() {
 
   return (
     <>
+      {/* Per-page SEO — React 19 hoists these into <head> */}
+      <title>Our Story — The Beacher Café</title>
+      <meta
+        name="description"
+        content="The story of The Beacher Café — a corner café at Queen & McLean in Toronto's Beaches, serving the neighbourhood since 1986."
+      />
       <Navbar transparent />
 
       <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d]">

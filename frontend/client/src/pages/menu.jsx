@@ -94,6 +94,12 @@ const Menu = () => {
 
   return (
     <>
+      {/* Per-page SEO — React 19 hoists these into <head> */}
+      <title>Menu — The Beacher Café</title>
+      <meta
+        name="description"
+        content="All-day breakfast, famous Hollandaise, burgers, and fresh salads at The Beacher Café in Toronto's Beaches. View the full menu."
+      />
       <Navbar transparent />
       <div className="min-h-screen bg-[#f5e8c7] font-serif text-[#3f2a1d]">
         {/* ── HERO HEADER — the famous hollandaise, plated, running up
