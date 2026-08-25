@@ -7,8 +7,10 @@ const TIMELINE = [
     title: "A Corner Is Born",
     body: "The Beacher Café first opened its doors at the corner of McLean and Queen Street East — a small, unassuming place where people came not just for coffee, but for familiarity. From the beginning, it was never about scale, but about presence.",
     image: "/vertyplace.webp",
-    imageAlt: "Queen Street and McLean, 1985 — the corner one year before The Beacher Café opened",
-    imageCaption: "Queen Street and McLean, 1985 — one year before it all began.",
+    imageAlt:
+      "Queen Street and McLean, 1985 — the corner one year before The Beacher Café opened",
+    imageCaption:
+      "Queen Street and McLean, 1985 — one year before it all began.",
   },
   {
     year: "1999",
@@ -159,7 +161,7 @@ export default function About() {
         <section className="relative py-20 md:py-28 px-6 overflow-hidden">
           <div className="absolute inset-0">
             <img
-        loading="lazy"
+              loading="lazy"
               src="/frontbeacher.webp"
               alt=""
               className="w-full h-full object-cover"
@@ -231,7 +233,7 @@ export default function About() {
               Painted by you
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6">
-              The Walls Do the Talking
+              Celebrating local artists
             </h2>
             <p className="max-w-2xl mx-auto text-center text-[#5a3e2b] text-lg leading-relaxed mb-12">
               Look closely next time you're in. Hand-painted tiles cover our
@@ -241,7 +243,7 @@ export default function About() {
             <div className="grid md:grid-cols-2 gap-6 md:gap-8">
               <figure>
                 <img
-        loading="lazy"
+                  loading="lazy"
                   src="/wallart2.webp"
                   alt="Wall of hand-painted tiles at the café, portraits and scenes by regulars"
                   className="w-full h-64 sm:h-80 object-cover rounded-2xl border-8 border-[#3f2a1d] shadow-xl"
@@ -252,7 +254,7 @@ export default function About() {
               </figure>
               <figure>
                 <img
-        loading="lazy"
+                  loading="lazy"
                   src="/frontartwall.webp"
                   alt="Tile mural by the front counter, painted by neighbourhood kids and regulars"
                   className="w-full h-64 sm:h-80 object-cover rounded-2xl border-8 border-[#3f2a1d] shadow-xl"
@@ -268,7 +270,7 @@ export default function About() {
         {/* FAMILY QUOTES — mural as a faint texture behind the words */}
         <section className="relative bg-[#3f2a1d] py-20 text-[#f5e8c7] text-center px-6 overflow-hidden">
           <img
-        loading="lazy"
+            loading="lazy"
             src="/wallart2.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-cover opacity-10"
