@@ -6,6 +6,9 @@ const TIMELINE = [
     year: "1986",
     title: "A Corner Is Born",
     body: "The Beacher Café first opened its doors at the corner of McLean and Queen Street East — a small, unassuming place where people came not just for coffee, but for familiarity. From the beginning, it was never about scale, but about presence.",
+    image: "/vertyplace.webp",
+    imageAlt: "Queen Street and McLean, 1985 — the corner one year before The Beacher Café opened",
+    imageCaption: "Queen Street and McLean, 1985 — one year before it all began.",
   },
   {
     year: "1999",
@@ -201,6 +204,19 @@ export default function About() {
                       </span>
                     </div>
                     <p className="text-[#5a3e2b]">{item.body}</p>
+                    {item.image && (
+                      <figure className="mt-4">
+                        <img
+                          loading="lazy"
+                          src={item.image}
+                          alt={item.imageAlt}
+                          className="w-full rounded-xl shadow-lg border-4 border-[#3f2a1d]"
+                        />
+                        <figcaption className="text-sm text-[#6b5a47] italic mt-2">
+                          {item.imageCaption}
+                        </figcaption>
+                      </figure>
+                    )}
                   </div>
                 </div>
               ))}
@@ -303,21 +319,6 @@ export default function About() {
               </div>
             ))}
           </div>
-        </section>
-
-        <section className="py-20 px-6 text-center">
-          <h2 className="text-3xl font-bold mb-6">A Corner of History</h2>
-          <p className="max-w-xl mx-auto text-[#6b5a47] mb-10">
-            Queen street and Mcclean 1985 year before the birth of The Beacher
-            Cafe.
-          </p>
-
-          <img
-        loading="lazy"
-            src="/vertyplace.webp"
-            alt="The History"
-            className="mx-auto w-full max-w-4xl rounded-2xl shadow-xl border-8 border-[#3f2a1d]"
-          />
         </section>
 
         {/* FINAL CTA */}
