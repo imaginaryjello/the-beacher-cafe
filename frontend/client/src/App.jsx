@@ -1,6 +1,7 @@
 // src/App.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Public Pages
 import Home from "./pages/home";
@@ -44,6 +45,7 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           {/* PUBLIC */}
           <Route path="/" element={<Home />} />
