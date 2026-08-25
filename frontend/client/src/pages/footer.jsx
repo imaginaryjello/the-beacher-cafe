@@ -120,13 +120,13 @@ export default function Footer() {
         {/* Social */}
         <div>
           <h2 className="text-xl font-semibold mb-4 text-[#c2410c]">
-            Stay Connected
+            Employee portal
           </h2>
           <p className="text-sm text-[#e7d7b1] mb-4">
             <Link to="/register" className="text-[#c2410c] hover:underline">
-              Register here
+              Login or register
             </Link>{" "}
-            to receive updates and special offers!
+            for staff management
           </p>
 
           <div className="flex gap-2 -ml-2">
