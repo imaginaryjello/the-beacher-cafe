@@ -32,7 +32,12 @@ const FALLBACK_SPECIALS = [
     title: "Turkey Avocado Sandwich",
     price: 12.99,
   },
-  { _id: "f2", imageUrl: "/steakegg.webp", title: "Steak & Eggs", price: 29.99 },
+  {
+    _id: "f2",
+    imageUrl: "/steakegg.webp",
+    title: "Steak & Eggs",
+    price: 29.99,
+  },
   {
     _id: "f3",
     imageUrl: "/cajunchicken.webp",
@@ -79,7 +84,9 @@ function Home() {
   return (
     <>
       {/* Per-page SEO — React 19 hoists these into <head> */}
-      <title>The Beacher Café — Breakfast & Brunch in the Beaches, Toronto</title>
+      <title>
+        The Beacher Café — Breakfast & Brunch in the Beaches, Toronto
+      </title>
       <meta
         name="description"
         content="A neighbourhood café at Queen & McLean since 1986 — all-day breakfast, famous Hollandaise, and a table that's always ready for you."
@@ -154,15 +161,17 @@ function Home() {
           </h2>
           <p className="text-lg md:text-xl max-w-3xl mx-auto mb-6">
             For nearly 40 years, The Beacher Café has been a true neighbourhood
-            gem. From a small beach shack to Toronto’s favourite coastal café,
-            we’ve been serving warm smiles, great food, and family bonds.
+            gem. From a small beach shack of only a few tables to a toronto's
+            most beloved breakfast brunch spot.
           </p>
           <div className="flex flex-col sm:flex-row gap-10 justify-center">
             <div>
               <h3 className="text-2xl font-semibold mb-2">
-                20+ Years of Service
+                40+ Years of Service
               </h3>
-              <p className="text-[#6b5a47]">Serving the community since 2003</p>
+              <p className="text-[#6b5a47]">
+                Heritage of the Beaches with service since 1986
+              </p>
             </div>
             <div>
               <h3 className="text-2xl font-semibold mb-2">
@@ -230,7 +239,7 @@ function Home() {
         <section className="mt-10 px-4 sm:px-6">
           <div className="relative rounded-3xl overflow-hidden shadow-xl max-w-5xl mx-auto">
             <img
-        loading="lazy"
+              loading="lazy"
               src="/frontbeacher.webp"
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
@@ -332,7 +341,7 @@ function Home() {
               />
               <div className="relative overflow-hidden group h-56 md:h-auto">
                 <img
-        loading="lazy"
+                  loading="lazy"
                   src="/oldstreetcarcafe.webp"
                   alt="Our cafe"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 bg-linear-to-l via-transparent"
