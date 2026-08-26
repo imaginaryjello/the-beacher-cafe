@@ -10,6 +10,8 @@ import Footer from "./footer";
 
 import { useSettings, formatHoursDisplay } from "../components/useSettings";
 import AnnouncementBanner from "../components/AnnouncementBanner";
+import Lightbox from "../components/Lightbox";
+import { cldThumb } from "../utils/cloudinary";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -81,6 +83,13 @@ function Home() {
       })
       .catch(() => {}); // silently fall back to static images if API is down
   }, []);
+
+  // The gallery list the grid AND the lightbox share (live data or fallback).
+  const galleryList =
+    galleryImages.length > 0 ? galleryImages : FALLBACK_GALLERY;
+  // null = lightbox closed; a number = the open image's index in galleryList.
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+
   return (
     <>
       {/* Per-page SEO — React 19 hoists these into <head> */}
@@ -266,10 +275,13 @@ function Home() {
           staggered look where each column can have different image heights.
           We distribute images round-robin across 4 columns (index % 4). */}
         {(() => {
-          const imgs =
-            galleryImages.length > 0 ? galleryImages : FALLBACK_GALLERY;
+          // Keep each image's flat index so a click can open the lightbox at
+          // the right position, while still distributing round-robin for the
+          // staggered masonry look.
           const cols = [[], [], [], []];
-          imgs.forEach((img, i) => cols[i % 4].push(img));
+          galleryList.forEach((img, i) =>
+            cols[i % 4].push({ ...img, _idx: i }),
+          );
           return (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-20 px-6">
               {cols.map((col, ci) => (
@@ -277,8 +289,9 @@ function Home() {
                   {col.map((img) => (
                     <ImageGrid
                       key={img._id}
-                      src={img.imageUrl}
+                      src={cldThumb(img.imageUrl, 600)}
                       alt={img.caption || "Gallery image"}
+                      onClick={() => setLightboxIndex(img._idx)}
                     />
                   ))}
                 </div>
@@ -286,6 +299,14 @@ function Home() {
             </div>
           );
         })()}
+
+        {/* Full-size viewer — opens on grid click */}
+        <Lightbox
+          images={galleryList}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onIndexChange={setLightboxIndex}
+        />
 
         {/* Visit Us */}
         <section className="w-full max-w-4xl mx-auto mt-20 px-4">
