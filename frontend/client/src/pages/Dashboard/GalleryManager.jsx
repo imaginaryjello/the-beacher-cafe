@@ -1,6 +1,7 @@
 // src/pages/Dashboard/GalleryManager.jsx
 import { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { cldSquare } from "../../utils/cloudinary";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -313,8 +314,9 @@ const GalleryTab = ({ token }) => {
               className="group relative aspect-square rounded-xl overflow-hidden border border-[#3f2a1d]/10 shadow-sm"
             >
               <img
-                src={img.imageUrl}
+                src={cldSquare(img.imageUrl, 400)}
                 alt={img.caption || "Gallery image"}
+                loading="lazy"
                 className="w-full h-full object-cover"
               />
               {/* Overlay with caption + delete.
@@ -708,8 +710,9 @@ const SpecialsTab = ({ token }) => {
               {/* Thumbnail */}
               {item.imageUrl ? (
                 <img
-                  src={item.imageUrl}
+                  src={cldSquare(item.imageUrl, 96)}
                   alt={item.title}
+                  loading="lazy"
                   className="w-12 h-12 rounded-lg object-cover shrink-0 border border-[#3f2a1d]/10"
                 />
               ) : (
