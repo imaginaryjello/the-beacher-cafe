@@ -5,6 +5,26 @@ import { cldSquare } from "../../utils/cloudinary";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+// Client-side upload guardrails — mirror the backend (config/cloudinary.js)
+// so the owner gets instant feedback before a doomed upload leaves the browser.
+const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+
+// Per-file status pill for the bulk-upload queue.
+const BulkStatus = ({ status, error }) => {
+  const map = {
+    pending: ["Waiting", "bg-gray-100 text-gray-500"],
+    uploading: ["Uploading…", "bg-blue-100 text-blue-700"],
+    saving: ["Saving…", "bg-blue-100 text-blue-700"],
+    done: ["✓ Added", "bg-green-100 text-green-700"],
+    error: [`✕ ${error || "Failed"}`, "bg-red-100 text-red-700"],
+  };
+  const [label, cls] = map[status] || map.pending;
+  return (
+    <span className={`shrink-0 px-2 py-0.5 rounded-full ${cls}`}>{label}</span>
+  );
+};
+
 // ─────────────────────────────────────────
 // SHARED IMAGE UPLOADER
 // Handles the two-step upload pattern:
@@ -114,6 +134,11 @@ const GalleryTab = ({ token }) => {
   const [order, setOrder] = useState(0);
   const [showAddPanel, setShowAddPanel] = useState(false);
 
+  // Bulk upload: a queue of per-file rows with live status
+  const [bulkQueue, setBulkQueue] = useState([]); // [{ name, status, error }]
+  const [bulkRunning, setBulkRunning] = useState(false);
+  const bulkInputRef = useRef(null);
+
   const showSuccess = (msg) => {
     setSuccessMsg(msg);
     setTimeout(() => setSuccessMsg(null), 3000);
@@ -176,6 +201,89 @@ const GalleryTab = ({ token }) => {
     }
   };
 
+  // ── BULK UPLOAD ──
+  // Upload several files one at a time (gentler on the free-tier backend than
+  // a burst of parallel streams), reporting each file's status as it goes.
+  // Partial failures don't abort the batch — every file gets its own outcome.
+  const handleBulkFiles = async (e) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = ""; // reset so the same files can be picked again later
+    if (files.length === 0) return;
+
+    // Seed the queue, validating type/size up front so obvious rejects never
+    // leave the browser. Keep the File on a local copy only, not in state.
+    const work = files.map((f) => {
+      if (!ALLOWED_TYPES.includes(f.type))
+        return { name: f.name, status: "error", error: "Not JPG/PNG/WebP" };
+      if (f.size > MAX_UPLOAD_BYTES)
+        return { name: f.name, status: "error", error: "Over 5MB" };
+      return { name: f.name, status: "pending", file: f };
+    });
+    setBulkQueue(work.map(({ file, ...row }) => row)); // strip File for display
+    setBulkRunning(true);
+    setError(null);
+
+    // New images land after the existing ones
+    let nextOrder =
+      images.reduce((m, i) => Math.max(m, i.order || 0), 0) + 1;
+    let added = 0;
+
+    const patch = (i, changes) =>
+      setBulkQueue((q) =>
+        q.map((row, idx) => (idx === i ? { ...row, ...changes } : row)),
+      );
+
+    for (let i = 0; i < work.length; i++) {
+      const item = work[i];
+      if (item.status === "error") continue; // failed client validation
+
+      try {
+        patch(i, { status: "uploading" });
+        const fd = new FormData();
+        fd.append("image", item.file);
+        const upRes = await fetch(`${API}/api/upload?type=gallery`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: fd,
+        });
+        if (!upRes.ok) throw new Error(`Upload failed (${upRes.status})`);
+        const upData = await upRes.json();
+        if (!upData.success) throw new Error(upData.message || "Upload rejected");
+
+        patch(i, { status: "saving" });
+        const saveRes = await fetch(`${API}/api/gallery`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            imageUrl: upData.imageUrl,
+            publicId: upData.publicId,
+            caption: "",
+            order: nextOrder++,
+          }),
+        });
+        const saveData = await saveRes.json();
+        if (!saveData.success) throw new Error(saveData.message || "Save failed");
+
+        patch(i, { status: "done" });
+        added++;
+      } catch (err) {
+        patch(i, { status: "error", error: err.message });
+      }
+    }
+
+    setBulkRunning(false);
+    await fetchImages(); // reflect the new images immediately
+    const failed = work.length - added;
+    if (added > 0)
+      showSuccess(
+        `Added ${added} image${added !== 1 ? "s" : ""}${failed ? `, ${failed} failed` : ""}.`,
+      );
+    else setError("No images were added — see the list below.");
+  };
+
   const handleDelete = async (id) => {
     setSaving(true);
     try {
@@ -205,15 +313,33 @@ const GalleryTab = ({ token }) => {
         <p className="text-sm text-[#6b5a47]" style={{ fontFamily: "Georgia, serif" }}>
           {images.length} image{images.length !== 1 ? "s" : ""} in gallery
         </p>
-        {!showAddPanel && (
+        <div className="flex gap-2" style={{ fontFamily: "Georgia, serif" }}>
           <button
-            onClick={() => setShowAddPanel(true)}
-            className="bg-[#c2410c] hover:bg-[#9a3009] text-white px-5 py-2 rounded-full text-sm font-medium transition-colors"
-            style={{ fontFamily: "Georgia, serif" }}
+            onClick={() => bulkInputRef.current?.click()}
+            disabled={bulkRunning}
+            className="border-2 border-[#c2410c] text-[#c2410c] hover:bg-[#c2410c]/5 px-4 py-2 rounded-full text-sm font-medium transition-colors disabled:opacity-50"
           >
-            + Add Image
+            {bulkRunning ? "Uploading…" : "＋ Add Multiple"}
           </button>
-        )}
+          {!showAddPanel && (
+            <button
+              onClick={() => setShowAddPanel(true)}
+              disabled={bulkRunning}
+              className="bg-[#c2410c] hover:bg-[#9a3009] text-white px-5 py-2 rounded-full text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              + Add Image
+            </button>
+          )}
+          {/* Hidden input drives the bulk flow; caption/order default (edit later) */}
+          <input
+            ref={bulkInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            className="hidden"
+            onChange={handleBulkFiles}
+          />
+        </div>
       </div>
 
       {/* Success / Error */}
@@ -226,6 +352,40 @@ const GalleryTab = ({ token }) => {
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm mb-4 flex justify-between">
           <span>{error}</span>
           <button onClick={() => setError(null)} className="font-bold">×</button>
+        </div>
+      )}
+
+      {/* Bulk upload progress */}
+      {bulkQueue.length > 0 && (
+        <div
+          className="bg-white border border-[#3f2a1d]/10 rounded-xl p-4 mb-4 shadow-sm"
+          style={{ fontFamily: "Georgia, serif" }}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm font-medium text-[#3f2a1d]">
+              {bulkQueue.filter((r) => r.status === "done").length}/
+              {bulkQueue.length} uploaded
+            </p>
+            {!bulkRunning && (
+              <button
+                onClick={() => setBulkQueue([])}
+                className="text-xs text-[#6b5a47] hover:underline"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <ul className="space-y-1 max-h-48 overflow-y-auto">
+            {bulkQueue.map((row, i) => (
+              <li
+                key={i}
+                className="flex items-center justify-between gap-2 text-xs"
+              >
+                <span className="truncate text-[#3f2a1d]">{row.name}</span>
+                <BulkStatus status={row.status} error={row.error} />
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
