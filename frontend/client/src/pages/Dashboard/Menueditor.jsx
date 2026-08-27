@@ -1,7 +1,7 @@
 // src/pages/Dashboard/Menueditor.jsx
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-// import ImageUpload from "../../components/ImageUpload";
+import ImageUpload from "../../components/ImageUpload";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -41,7 +41,7 @@ const CategoryBadge = ({ category }) => {
 // ─────────────────────────────────────────
 // ITEM FORM (add + edit reuse same component)
 // ─────────────────────────────────────────
-const ItemForm = ({ initial, onSave, onCancel, saving }) => {
+const ItemForm = ({ initial, onSave, onCancel, saving, token }) => {
   const [form, setForm] = useState(initial || EMPTY_FORM);
   const [errors, setErrors] = useState({});
 
@@ -148,12 +148,22 @@ const ItemForm = ({ initial, onSave, onCancel, saving }) => {
         />
       </div>
 
-      {/* <ImageUpload
-        currentImageUrl={form.imageUrl}
-        onUploadSuccess={({ url }) => set("imageUrl", url)}
-        token={token}
-        type="menu"
-      /> */}
+      {/* Image only matters for breakfast — those are the only items that
+          render as featured photo cards on the public menu. Hidden for other
+          categories so the uploader isn't a dead option. */}
+      {form.category === "breakfast" && (
+        <div>
+          <ImageUpload
+            currentImageUrl={form.imageUrl}
+            onUploadSuccess={(url) => set("imageUrl", url)}
+            token={token}
+            type="menu"
+          />
+          <p className="text-xs text-[#6b5a47] mt-1">
+            Breakfast items with an image appear as featured cards on the menu.
+          </p>
+        </div>
+      )}
 
       {/* Display order */}
       <div>
@@ -522,7 +532,7 @@ const MenuEditor = () => {
             onSave={handleAdd}
             onCancel={() => setShowAddForm(false)}
             saving={saving}
-            // token={token}
+            token={token}
           />
         </div>
       )}
@@ -537,6 +547,10 @@ const MenuEditor = () => {
             Editing: {editingItem.name}
           </h2>
           <ItemForm
+            // WHY key: forces a fresh form instance when the edited item
+            // changes, so useState re-seeds from the new item's data instead
+            // of keeping the previous item's values (which corrupted saves).
+            key={editingItem._id}
             initial={{
               name: editingItem.name,
               price: editingItem.price,
@@ -550,7 +564,7 @@ const MenuEditor = () => {
             onSave={handleEdit}
             onCancel={() => setEditingItem(null)}
             saving={saving}
-            // token={token}
+            token={token}
           />
         </div>
       )}

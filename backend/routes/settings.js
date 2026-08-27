@@ -55,6 +55,7 @@ router.put("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
       address,
       announcement,
       announcementActive,
+      openSignMode,
     } = req.body;
 
     const settings = await getSettings();
@@ -73,6 +74,7 @@ router.put("/", verifyToken, requireCoAdminOrAdmin, async (req, res) => {
     if (announcement !== undefined) settings.announcement = announcement;
     if (announcementActive !== undefined)
       settings.announcementActive = announcementActive;
+    if (openSignMode !== undefined) settings.openSignMode = openSignMode;
 
     await settings.save();
 

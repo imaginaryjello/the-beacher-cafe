@@ -27,6 +27,7 @@ const upload = multer({
 const FOLDERS = {
   menu: "beacher-cafe/menu",
   gallery: "beacher-cafe/gallery",
+  gallerypage: "beacher-cafe/gallery-page",
   specials: "beacher-cafe/specials",
   hero: "beacher-cafe/hero",
 };

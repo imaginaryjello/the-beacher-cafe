@@ -10,6 +10,7 @@ import upload from "./routes/upload.js";
 import reservationRouter from "./routes/reservations.js";
 import settingsRouter from "./routes/settings.js";
 import galleryRouter from "./routes/gallery.js";
+import galleryPageRouter from "./routes/galleryPage.js";
 import specialsRouter from "./routes/specials.js";
 
 import notificationRouter from "./routes/notifications.js";
@@ -64,4 +65,5 @@ app.use("/api/notifications", notificationRouter);
 app.use("/api/reservations", reservationRouter);
 app.use("/api/settings", settingsRouter);
 app.use("/api/gallery", galleryRouter);
+app.use("/api/gallery-page", galleryPageRouter);
 app.use("/api/specials", specialsRouter);

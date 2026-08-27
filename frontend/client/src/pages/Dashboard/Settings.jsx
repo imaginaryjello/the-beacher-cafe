@@ -2,6 +2,7 @@
 // Full settings for owner (admin), blocked dates only for co-admin.
 import { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { signIsOpen } from "../../components/useSettings";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -594,6 +595,39 @@ const Settings = () => {
               value={settings.announcement}
               onChange={(e) => set("announcement", e.target.value)}
             />
+          </div>
+
+          {/* OPEN SIGN — controls the neon sign on the home page */}
+          <div className="bg-white border border-[#3f2a1d]/10 rounded-xl p-6 mb-4 shadow-sm">
+            <h2 className="text-lg font-semibold text-[#3f2a1d] mb-1">
+              Open Sign
+            </h2>
+            <p className="text-sm text-[#6b5a47] mb-4">
+              The neon sign on your home page.{" "}
+              <span className="font-medium">Auto</span> follows your opening
+              hours above — it flips to OPEN and CLOSED on schedule.
+            </p>
+            <div className="flex flex-wrap items-center gap-3">
+              <select
+                className={input + " w-auto"}
+                value={settings.openSignMode || "auto"}
+                onChange={(e) => set("openSignMode", e.target.value)}
+              >
+                <option value="auto">Auto (follow opening hours)</option>
+                <option value="on">Always show OPEN</option>
+                <option value="off">Always show CLOSED</option>
+              </select>
+              {/* Live preview of what the sign reads right now */}
+              <span
+                className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                  signIsOpen(settings)
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-600"
+                }`}
+              >
+                Now showing: {signIsOpen(settings) ? "OPEN" : "CLOSED"}
+              </span>
+            </div>
           </div>
         </>
       )}

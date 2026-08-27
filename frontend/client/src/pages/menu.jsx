@@ -7,6 +7,30 @@ import Footer from "./footer";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+// Shown as the featured breakfast cards only when no breakfast item has an
+// image yet. Once the owner uploads images in the Menu Editor, those items
+// take over these slots. Priced as whole numbers to match the original design.
+const STATIC_FEATURED = [
+  {
+    _id: "sf1",
+    name: "Eggs Benjamyn",
+    price: 21,
+    description: "Smoked salmon, English muffin, famous Hollandaise, red onion",
+    imageUrl: "/benamyn.webp",
+  },
+  {
+    _id: "sf2",
+    name: "New York Steak & Eggs",
+    price: 26,
+    description: "Charbroiled striploin + two extra large eggs",
+    imageUrl: "/steakegg.webp",
+  },
+];
+
+// $21 for whole numbers, $12.50 otherwise
+const priceLabel = (p) =>
+  Number.isInteger(Number(p)) ? `$${Number(p)}` : `$${Number(p).toFixed(2)}`;
+
 // ─────────────────────────────────────────
 // LOADING SKELETON
 // ─────────────────────────────────────────
@@ -91,6 +115,12 @@ const Menu = () => {
   const specials = menuItems.filter(
     (i) => i.isSpecial || i.category === "specials",
   );
+
+  // Breakfast items split into featured (with an image → big cards) and the
+  // rest (text list). Falls back to STATIC_FEATURED when none have images.
+  const breakfast = byCategory("breakfast");
+  const featuredBreakfast = breakfast.filter((i) => i.imageUrl);
+  const listBreakfast = breakfast.filter((i) => !i.imageUrl);
 
   return (
     <>
@@ -222,103 +252,102 @@ const Menu = () => {
               ALL DAY BREAKFAST
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Featured cards — keep static since they have images */}
-              <div className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group">
-                <img
-        loading="lazy"
-                  src="/benamyn.webp"
-                  alt="Eggs Benjamyn"
-                  className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
-                />
-                <div className="flex justify-between items-start gap-3">
-                  <div>
-                    <h3 className="font-bold text-xl sm:text-2xl">
-                      EGGS BENJAMYN
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Smoked salmon, English muffin, famous Hollandaise, red
-                      onion
-                    </p>
+              {/* Featured cards — DB breakfast items that have an image, or the
+                  two static placeholders until the owner uploads their own. */}
+              {(featuredBreakfast.length > 0
+                ? featuredBreakfast
+                : STATIC_FEATURED
+              ).map((item) => (
+                <div
+                  key={item._id}
+                  className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group"
+                >
+                  <img
+                    loading="lazy"
+                    src={item.imageUrl}
+                    alt={item.name}
+                    className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
+                  />
+                  <div className="flex justify-between items-start gap-3">
+                    <div>
+                      <h3 className="font-bold text-xl sm:text-2xl">
+                        {item.name.toUpperCase()}
+                      </h3>
+                      {item.description && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                    <span className="font-black text-2xl sm:text-3xl text-[#c2410c] shrink-0">
+                      {priceLabel(item.price)}
+                    </span>
                   </div>
-                  <span className="font-black text-2xl sm:text-3xl text-[#c2410c] shrink-0">
-                    $21
-                  </span>
                 </div>
-              </div>
-              <div className="bg-white border border-[#e8d9b8] rounded-3xl p-6 shadow-md hover:shadow-xl transition-shadow group">
-                <img
-        loading="lazy"
-                  src="/steakegg.webp"
-                  alt="Steak & Eggs"
-                  className="w-full h-56 object-cover rounded-2xl mb-6 group-hover:scale-105 transition-transform"
-                />
-                <div className="flex justify-between items-start gap-3">
-                  <div>
-                    <h3 className="font-bold text-xl sm:text-2xl">
-                      NEW YORK STEAK & EGGS
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Charbroiled striploin + two extra large eggs
-                    </p>
-                  </div>
-                  <span className="font-black text-2xl sm:text-3xl text-[#c2410c] shrink-0">
-                    $26
-                  </span>
-                </div>
-              </div>
+              ))}
 
-              {/* Dynamic breakfast items from DB */}
-              <div className="bg-white border border-[#e8d9b8] rounded-3xl p-5 sm:p-8 shadow-md col-span-1 md:col-span-2">
-                {loading ? (
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {[1, 2, 3, 4].map((i) => (
-                      <SkeletonRow key={i} />
-                    ))}
-                  </div>
-                ) : byCategory("breakfast").length > 0 ? (
-                  <div className="grid md:grid-cols-2 gap-6 text-lg">
-                    {byCategory("breakfast").map((item) => (
-                      <div
-                        key={item._id}
-                        className="flex justify-between border-b pb-4"
-                      >
-                        <div>
-                          <span>{item.name.toUpperCase()}</span>
-                          {item.description && (
-                            <p className="text-xs text-gray-500 mt-0.5">
-                              {item.description}
-                            </p>
-                          )}
-                        </div>
-                        <span className="font-bold ml-4 shrink-0">
-                          ${Number(item.price).toFixed(2)}
-                        </span>
+              {/* Remaining breakfast items as a text list — featured ones are
+                  shown above as cards, so they're excluded here. */}
+              {(() => {
+                const listItems =
+                  featuredBreakfast.length > 0 ? listBreakfast : breakfast;
+                // Everything is featured — nothing left to list
+                if (!loading && listItems.length === 0 && breakfast.length > 0)
+                  return null;
+                return (
+                  <div className="bg-white border border-[#e8d9b8] rounded-3xl p-5 sm:p-8 shadow-md col-span-1 md:col-span-2">
+                    {loading ? (
+                      <div className="grid md:grid-cols-2 gap-4">
+                        {[1, 2, 3, 4].map((i) => (
+                          <SkeletonRow key={i} />
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  // Static fallback
-                  <div className="grid md:grid-cols-2 gap-6 text-lg">
-                    {[
-                      ["EGGS FLORENTINE", "$21"],
-                      ["ALL DAY BREAKFAST", "$18"],
-                      ["EGGS BENEDICT", "$20"],
-                      ["BEACHER-STYLE FRENCH TOAST", "$19"],
-                      ["PANCAKES", "$18"],
-                      ["SMOKED SALMON SCRAMBLED EGGS", "$18"],
-                      ["THE HEALTHY BREAKFAST", "$18"],
-                    ].map(([name, price]) => (
-                      <div
-                        key={name}
-                        className="flex justify-between border-b pb-4"
-                      >
-                        <span>{name}</span>
-                        <span className="font-bold">{price}</span>
+                    ) : listItems.length > 0 ? (
+                      <div className="grid md:grid-cols-2 gap-6 text-lg">
+                        {listItems.map((item) => (
+                          <div
+                            key={item._id}
+                            className="flex justify-between border-b pb-4"
+                          >
+                            <div>
+                              <span>{item.name.toUpperCase()}</span>
+                              {item.description && (
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                            <span className="font-bold ml-4 shrink-0">
+                              ${Number(item.price).toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    ) : (
+                      // Static fallback (no breakfast items in DB yet)
+                      <div className="grid md:grid-cols-2 gap-6 text-lg">
+                        {[
+                          ["EGGS FLORENTINE", "$21"],
+                          ["ALL DAY BREAKFAST", "$18"],
+                          ["EGGS BENEDICT", "$20"],
+                          ["BEACHER-STYLE FRENCH TOAST", "$19"],
+                          ["PANCAKES", "$18"],
+                          ["SMOKED SALMON SCRAMBLED EGGS", "$18"],
+                          ["THE HEALTHY BREAKFAST", "$18"],
+                        ].map(([name, price]) => (
+                          <div
+                            key={name}
+                            className="flex justify-between border-b pb-4"
+                          >
+                            <span>{name}</span>
+                            <span className="font-bold">{price}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                );
+              })()}
             </div>
           </section>
 

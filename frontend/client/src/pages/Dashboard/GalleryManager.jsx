@@ -1,7 +1,6 @@
 // src/pages/Dashboard/GalleryManager.jsx
 import { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { cldSquare } from "../../utils/cloudinary";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -120,7 +119,14 @@ const ImageUploader = ({ onUploaded, type, token, disabled }) => {
 // GALLERY TAB
 // Upload images → save to DB → display grid
 // ─────────────────────────────────────────
-const GalleryTab = ({ token }) => {
+// endpoint + uploadType let this same tab drive either collection:
+// the home-grid gallery (/api/gallery) or the standalone gallery page
+// (/api/gallery-page). Defaults keep the original home-grid behaviour.
+const GalleryTab = ({
+  token,
+  endpoint = "/api/gallery",
+  uploadType = "gallery",
+}) => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -147,7 +153,7 @@ const GalleryTab = ({ token }) => {
   const fetchImages = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API}/api/gallery`);
+      const res = await fetch(`${API}${endpoint}`);
       const data = await res.json();
       if (data.success) setImages(data.images);
       else setError(data.message);
@@ -170,7 +176,7 @@ const GalleryTab = ({ token }) => {
     }
     setSaving(true);
     try {
-      const res = await fetch(`${API}/api/gallery`, {
+      const res = await fetch(`${API}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -205,6 +211,8 @@ const GalleryTab = ({ token }) => {
   // Upload several files one at a time (gentler on the free-tier backend than
   // a burst of parallel streams), reporting each file's status as it goes.
   // Partial failures don't abort the batch — every file gets its own outcome.
+  // Uses the same endpoint/uploadType as this tab, so it works for both the
+  // home grid and the gallery page.
   const handleBulkFiles = async (e) => {
     const files = Array.from(e.target.files || []);
     e.target.value = ""; // reset so the same files can be picked again later
@@ -224,8 +232,7 @@ const GalleryTab = ({ token }) => {
     setError(null);
 
     // New images land after the existing ones
-    let nextOrder =
-      images.reduce((m, i) => Math.max(m, i.order || 0), 0) + 1;
+    let nextOrder = images.reduce((m, i) => Math.max(m, i.order || 0), 0) + 1;
     let added = 0;
 
     const patch = (i, changes) =>
@@ -241,7 +248,7 @@ const GalleryTab = ({ token }) => {
         patch(i, { status: "uploading" });
         const fd = new FormData();
         fd.append("image", item.file);
-        const upRes = await fetch(`${API}/api/upload?type=gallery`, {
+        const upRes = await fetch(`${API}/api/upload?type=${uploadType}`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
           body: fd,
@@ -251,7 +258,7 @@ const GalleryTab = ({ token }) => {
         if (!upData.success) throw new Error(upData.message || "Upload rejected");
 
         patch(i, { status: "saving" });
-        const saveRes = await fetch(`${API}/api/gallery`, {
+        const saveRes = await fetch(`${API}${endpoint}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -287,7 +294,7 @@ const GalleryTab = ({ token }) => {
   const handleDelete = async (id) => {
     setSaving(true);
     try {
-      const res = await fetch(`${API}/api/gallery/${id}`, {
+      const res = await fetch(`${API}${endpoint}/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -399,9 +406,9 @@ const GalleryTab = ({ token }) => {
             Add New Image
           </h3>
           <div className="space-y-3">
-            {/* WHY type="gallery": tells /api/upload which Cloudinary folder to use */}
+            {/* uploadType tells /api/upload which Cloudinary folder to use */}
             <ImageUploader
-              type="gallery"
+              type={uploadType}
               token={token}
               disabled={saving}
               onUploaded={(data) => setPendingUpload(data)}
@@ -474,9 +481,8 @@ const GalleryTab = ({ token }) => {
               className="group relative aspect-square rounded-xl overflow-hidden border border-[#3f2a1d]/10 shadow-sm"
             >
               <img
-                src={cldSquare(img.imageUrl, 400)}
+                src={img.imageUrl}
                 alt={img.caption || "Gallery image"}
-                loading="lazy"
                 className="w-full h-full object-cover"
               />
               {/* Overlay with caption + delete.
@@ -870,9 +876,8 @@ const SpecialsTab = ({ token }) => {
               {/* Thumbnail */}
               {item.imageUrl ? (
                 <img
-                  src={cldSquare(item.imageUrl, 96)}
+                  src={item.imageUrl}
                   alt={item.title}
-                  loading="lazy"
                   className="w-12 h-12 rounded-lg object-cover shrink-0 border border-[#3f2a1d]/10"
                 />
               ) : (
@@ -977,7 +982,8 @@ const GalleryManager = ({ defaultTab = "gallery" }) => {
   const [activeTab, setActiveTab] = useState(defaultTab);
 
   const tabs = [
-    { id: "gallery", label: "Gallery", icon: "🖼️" },
+    { id: "gallery", label: "Home Grid", icon: "🖼️" },
+    { id: "gallerypage", label: "Gallery Page", icon: "🏛️" },
     { id: "specials", label: "Specials", icon: "⭐" },
   ];
 
@@ -1015,11 +1021,15 @@ const GalleryManager = ({ defaultTab = "gallery" }) => {
       </div>
 
       {/* Active tab content */}
-      {activeTab === "gallery" ? (
-        <GalleryTab token={token} />
-      ) : (
-        <SpecialsTab token={token} />
+      {activeTab === "gallery" && <GalleryTab token={token} />}
+      {activeTab === "gallerypage" && (
+        <GalleryTab
+          token={token}
+          endpoint="/api/gallery-page"
+          uploadType="gallerypage"
+        />
       )}
+      {activeTab === "specials" && <SpecialsTab token={token} />}
     </div>
   );
 };

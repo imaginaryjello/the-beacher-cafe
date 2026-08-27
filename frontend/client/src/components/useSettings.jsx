@@ -23,6 +23,49 @@ export const useSettings = () => {
   return { settings, loading };
 };
 
+// Is the café open right now, per its schedule, in TORONTO time?
+// WHY Toronto: a visitor in another timezone must see the café's real status,
+// not their own clock. Intl gives us the current weekday + HH:MM there.
+export const isOpenNow = (hours) => {
+  if (!hours) return false;
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Toronto",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
+  const val = (t) => parts.find((p) => p.type === t)?.value;
+  const dayKey = {
+    Sun: "sun",
+    Mon: "mon",
+    Tue: "tue",
+    Wed: "wed",
+    Thu: "thu",
+    Fri: "fri",
+    Sat: "sat",
+  }[val("weekday")];
+  const day = hours[dayKey];
+  if (!day || day.closed) return false;
+  const toMin = (s) => {
+    const [h, m] = s.split(":").map(Number);
+    return h * 60 + m;
+  };
+  const nowMin = Number(val("hour")) * 60 + Number(val("minute"));
+  // Assumes close > open on the same day — fine for café hours.
+  return nowMin >= toMin(day.open) && nowMin < toMin(day.close);
+};
+
+// Resolve the neon sign state from the owner's mode + schedule.
+// "auto" (default) follows the hours; "on"/"off" force it. null = not loaded.
+export const signIsOpen = (settings) => {
+  if (!settings) return null;
+  const mode = settings.openSignMode || "auto";
+  if (mode === "on") return true;
+  if (mode === "off") return false;
+  return isOpenNow(settings.hours);
+};
+
 export const formatTime = (t) => {
   if (!t) return "";
   const [h, m] = t.split(":");

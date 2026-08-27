@@ -8,10 +8,12 @@ import Reservations from "./reservation";
 import Register from "./register";
 import Footer from "./footer";
 
-import { useSettings, formatHoursDisplay } from "../components/useSettings";
+import {
+  useSettings,
+  formatHoursDisplay,
+  signIsOpen,
+} from "../components/useSettings";
 import AnnouncementBanner from "../components/AnnouncementBanner";
-import Lightbox from "../components/Lightbox";
-import { cldThumb } from "../utils/cloudinary";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -58,6 +60,15 @@ function Home() {
   const { settings } = useSettings();
   const hoursGroups = settings ? formatHoursDisplay(settings.hours) : [];
 
+  // Re-render every minute so the neon sign flips at open/close time even if
+  // the visitor leaves the page open. signIsOpen resolves the current state.
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 60000);
+    return () => clearInterval(id);
+  }, []);
+  const signOpen = signIsOpen(settings);
+
   // Fetch active specials from the backend
   const [specials, setSpecials] = useState([]);
   useEffect(() => {
@@ -83,13 +94,6 @@ function Home() {
       })
       .catch(() => {}); // silently fall back to static images if API is down
   }, []);
-
-  // The gallery list the grid AND the lightbox share (live data or fallback).
-  const galleryList =
-    galleryImages.length > 0 ? galleryImages : FALLBACK_GALLERY;
-  // null = lightbox closed; a number = the open image's index in galleryList.
-  const [lightboxIndex, setLightboxIndex] = useState(null);
-
   return (
     <>
       {/* Per-page SEO — React 19 hoists these into <head> */}
@@ -114,6 +118,30 @@ function Home() {
           <div className="absolute inset-0 bg-linear-to-b from-[#1f1209]/45 via-[#1f1209]/15 to-[#1f1209]/70" />
         </div>
         <Navbar transparent />
+
+        {/* Neon OPEN / CLOSED sign — toggled from dashboard Settings */}
+        {settings && (
+          <div className="absolute top-20 sm:top-24 right-4 sm:right-8 z-20">
+            <div
+              className={`px-4 py-2 rounded-xl border-2 backdrop-blur-sm font-bold tracking-[0.2em] text-sm sm:text-base select-none ${
+                signOpen
+                  ? "border-green-400 text-green-200 bg-black/25"
+                  : "border-red-400/70 text-red-200/80 bg-black/40"
+              }`}
+              style={
+                signOpen
+                  ? {
+                      textShadow: "0 0 6px #4ade80, 0 0 16px #22c55e",
+                      boxShadow: "0 0 14px rgba(34,197,94,0.5)",
+                    }
+                  : { textShadow: "0 0 5px rgba(248,113,113,0.8)" }
+              }
+              aria-label={signOpen ? "Café is open" : "Café is closed"}
+            >
+              ● {signOpen ? "OPEN" : "CLOSED"}
+            </div>
+          </div>
+        )}
 
         {/* Content */}
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto text-white">
@@ -275,13 +303,10 @@ function Home() {
           staggered look where each column can have different image heights.
           We distribute images round-robin across 4 columns (index % 4). */}
         {(() => {
-          // Keep each image's flat index so a click can open the lightbox at
-          // the right position, while still distributing round-robin for the
-          // staggered masonry look.
+          const imgs =
+            galleryImages.length > 0 ? galleryImages : FALLBACK_GALLERY;
           const cols = [[], [], [], []];
-          galleryList.forEach((img, i) =>
-            cols[i % 4].push({ ...img, _idx: i }),
-          );
+          imgs.forEach((img, i) => cols[i % 4].push(img));
           return (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-20 px-6">
               {cols.map((col, ci) => (
@@ -289,9 +314,8 @@ function Home() {
                   {col.map((img) => (
                     <ImageGrid
                       key={img._id}
-                      src={cldThumb(img.imageUrl, 600)}
+                      src={img.imageUrl}
                       alt={img.caption || "Gallery image"}
-                      onClick={() => setLightboxIndex(img._idx)}
                     />
                   ))}
                 </div>
@@ -299,14 +323,6 @@ function Home() {
             </div>
           );
         })()}
-
-        {/* Full-size viewer — opens on grid click */}
-        <Lightbox
-          images={galleryList}
-          index={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-          onIndexChange={setLightboxIndex}
-        />
 
         {/* Visit Us */}
         <section className="w-full max-w-4xl mx-auto mt-20 px-4">

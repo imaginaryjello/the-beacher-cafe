@@ -7,6 +7,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/home";
 import Menu from "./pages/menu";
 import About from "./pages/about";
+import Gallery from "./pages/gallery";
 import Reservations from "./pages/reservation";
 
 // Auth Pages
@@ -50,6 +51,7 @@ function App() {
           {/* PUBLIC */}
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/about" element={<About />} />
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/register" element={<Register />} />

@@ -38,6 +38,17 @@ const settingsSchema = new mongoose.Schema(
     announcement: { type: String, default: "" },
     announcementActive: { type: Boolean, default: false },
 
+    // ── OPEN SIGN ──
+    // Neon "OPEN" sign on the home hero.
+    //   "auto" → follows the per-day hours schedule (default)
+    //   "on"   → always shows OPEN
+    //   "off"  → always shows CLOSED
+    openSignMode: {
+      type: String,
+      enum: ["auto", "on", "off"],
+      default: "auto",
+    },
+
     // ── BLOCKED DATES ──
     // Specific calendar dates where reservations are turned off entirely.
     // Managed via /api/settings/blocked-dates (admin or co-admin).
